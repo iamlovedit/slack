@@ -1,7 +1,10 @@
+using System.Text;
 using Slack.Commands;
 using Slack.Localization;
 using Spectre.Console;
 
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 var registry = new CommandRegistry();
 registry.Register(new UpCommand());
 registry.Register(new InitCommand());
