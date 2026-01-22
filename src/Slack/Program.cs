@@ -13,7 +13,8 @@ switch (command)
 {
     case "up":
         return UpCommand.Execute();
-
+    case "init":
+        return InitCommand.Execute();
     case "config":
         return ConfigCommand.Execute(args.Skip(1).ToArray());
 
