@@ -14,6 +14,7 @@ public class SlackConfig
     public string PackageManager { get; set; } = "NuGet";
     public string RuntimeVersion { get; set; } = ".NET 10.0";
     public string EnvName { get; set; } = "Production";
+    public string? Locale { get; set; } = null; // null = 跟随系统, "zh-CN", "en-US"
     public List<string> CustomModules { get; set; } = [];
     public List<string> CustomTasks { get; set; } = [];
 

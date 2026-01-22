@@ -1,3 +1,4 @@
+using Slack.Localization;
 using Slack.Models;
 using Spectre.Console;
 
@@ -6,7 +7,7 @@ namespace Slack.Commands;
 public class UpCommand : ICommand
 {
     public string Name => "up";
-    public string Description => "让你看起来很忙！终端刷屏输出，假装在工作";
+    public string Description => Strings.UpDescription;
     public string[] Aliases => [];
 
     private static readonly string[] SpinnerTypes =
@@ -65,12 +66,12 @@ public class UpCommand : ICommand
 
         var (manager, version) = _config.GetPackageInfo();
 
-        AnsiConsole.MarkupLine($"[bold green]🚀 Building {_config.ProjectName}...[/]\n");
+        AnsiConsole.MarkupLine($"[bold green]{Strings.Format(Strings.Building, _config.ProjectName)}[/]\n");
         Thread.Sleep(300);
 
         // 显示初始化信息
-        AnsiConsole.MarkupLine($"[grey][[INFO]] Detected environment: {_config.EnvName}[/]");
-        AnsiConsole.MarkupLine($"[grey][[INFO]] Runtime: {version}[/]");
+        AnsiConsole.MarkupLine($"[grey]{Strings.Format(Strings.DetectedEnv, _config.EnvName)}[/]");
+        AnsiConsole.MarkupLine($"[grey]{Strings.Format(Strings.Runtime, version)}[/]");
         AnsiConsole.MarkupLine($"[grey][[INFO]] Package manager: {manager}[/]");
         AnsiConsole.WriteLine();
 
@@ -114,7 +115,7 @@ public class UpCommand : ICommand
                 var key = Console.ReadKey(true);
                 if (key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control)
                 {
-                    AnsiConsole.MarkupLine("\n[bold yellow]⚠ Build interrupted by user.[/]");
+                    AnsiConsole.MarkupLine($"\n[bold yellow]{Strings.BuildInterrupted}[/]");
                     break;
                 }
                 if (key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape)
@@ -196,12 +197,12 @@ public class UpCommand : ICommand
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
             .SpinnerStyle(Style.Parse("red"))
-            .Start("[yellow]Recovering...[/]", ctx =>
+            .Start($"[yellow]{Strings.Recovering}[/]", ctx =>
             {
                 Thread.Sleep(_random.Next(1500, 3500));
             });
 
-        AnsiConsole.MarkupLine($"[green]✓[/] [dim]Recovered successfully[/]");
+        AnsiConsole.MarkupLine($"[green]✓[/] [dim]{Strings.RecoveredSuccess}[/]");
         Thread.Sleep(200);
     }
 
@@ -270,11 +271,11 @@ public class UpCommand : ICommand
         // 偶尔显示警告
         if (_random.Next(100) < 20)
         {
-            AnsiConsole.MarkupLine($"[green]✓[/] {taskName} [grey]done[/] [yellow](with {_random.Next(1, 5)} warnings)[/]");
+            AnsiConsole.MarkupLine($"[green]✓[/] {taskName} [grey]{Strings.Done.ToLower()}[/] [yellow]{Strings.Format(Strings.WithWarnings, _random.Next(1, 5))}[/]");
         }
         else
         {
-            AnsiConsole.MarkupLine($"[green]✓[/] {taskName} [grey]done[/]");
+            AnsiConsole.MarkupLine($"[green]✓[/] {taskName} [grey]{Strings.Done.ToLower()}[/]");
         }
     }
 
@@ -328,7 +329,7 @@ public class UpCommand : ICommand
 
         foreach (var t in tasks)
         {
-            AnsiConsole.MarkupLine($"[green]✓[/] {t} [grey]done[/]");
+            AnsiConsole.MarkupLine($"[green]✓[/] {t} [grey]{Strings.Done.ToLower()}[/]");
         }
     }
 
@@ -354,7 +355,7 @@ public class UpCommand : ICommand
                 }
             });
 
-        AnsiConsole.MarkupLine($"[green]✓[/] {action.Replace("=>", "").Trim()} [grey]completed[/]");
+        AnsiConsole.MarkupLine($"[green]✓[/] {action.Replace("=>", "").Trim()} [grey]{Strings.Completed}[/]");
     }
 
     private static void ShowFakeCompileOutput()
@@ -393,7 +394,7 @@ public class UpCommand : ICommand
 
         if (hasWarning)
         {
-            AnsiConsole.MarkupLine($"[yellow]  └─ Completed with warnings[/]");
+            AnsiConsole.MarkupLine($"[yellow]  {Strings.CompletedWithWarnings}[/]");
         }
         AnsiConsole.WriteLine();
     }
@@ -432,7 +433,7 @@ public class UpCommand : ICommand
         var warningCount = _random.Next(0, 12);
         var time = _random.NextDouble() * 30 + 10; // 10-40秒
 
-        AnsiConsole.Write(new Rule("[green]Build Summary[/]").RuleStyle("green dim"));
+        AnsiConsole.Write(new Rule($"[green]{Strings.BuildSummary}[/]").RuleStyle("green dim"));
 
         var table = new Table()
             .Border(TableBorder.None)
@@ -440,19 +441,19 @@ public class UpCommand : ICommand
             .AddColumn("")
             .AddColumn("");
 
-        table.AddRow("[green]Status[/]", "[bold green]SUCCESS[/]");
-        table.AddRow("[grey]Project[/]", $"[cyan]{_config.ProjectName}[/]");
-        table.AddRow("[grey]Duration[/]", $"[white]{time:F1}s[/]");
+        table.AddRow($"[green]{Strings.Status}[/]", $"[bold green]{Strings.Success}[/]");
+        table.AddRow($"[grey]{Strings.Project}[/]", $"[cyan]{_config.ProjectName}[/]");
+        table.AddRow($"[grey]{Strings.Duration}[/]", $"[white]{time:F1}s[/]");
 
         if (warningCount > 0)
         {
-            table.AddRow("[grey]Warnings[/]", $"[yellow]{warningCount}[/]");
+            table.AddRow($"[grey]{Strings.Warnings}[/]", $"[yellow]{warningCount}[/]");
         }
-        table.AddRow("[grey]Errors[/]", "[green]0[/]");
+        table.AddRow($"[grey]{Strings.Errors}[/]", "[green]0[/]");
 
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine($"[bold green]✓ {_config.ProjectName} build completed successfully![/]");
+        AnsiConsole.MarkupLine($"[bold green]{Strings.Format(Strings.BuildCompleted, _config.ProjectName)}[/]");
     }
 
     private static Spinner GetSpinnerByName(string name) => name switch

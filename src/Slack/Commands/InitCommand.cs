@@ -1,3 +1,4 @@
+using Slack.Localization;
 using Slack.Models;
 using Spectre.Console;
 
@@ -6,7 +7,7 @@ namespace Slack.Commands;
 public class InitCommand : ICommand
 {
     public string Name => "init";
-    public string Description => "初始化新的 slack 项目配置";
+    public string Description => Strings.InitDescription;
     public string[] Aliases => [];
 
     public int Execute(string[] args)
@@ -24,71 +25,77 @@ public class InitCommand : ICommand
         if (!Directory.Exists(targetPath))
         {
             Console.Clear();
-            AnsiConsole.Write(new FigletText("slack init").Color(Color.Cyan1));
+            AnsiConsole.Write(new FigletText(Strings.InitTitle).Color(Color.Cyan1));
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine($"[yellow]目标目录不存在: [/][cyan]{targetPath}[/]\n");
+            AnsiConsole.MarkupLine($"[yellow]{Strings.Format(Strings.DirNotExist, targetPath)}[/]\n");
 
-            if (!AnsiConsole.Confirm("是否创建该目录?", true))
+            if (!AnsiConsole.Confirm(Strings.CreateDirConfirm, true))
             {
-                AnsiConsole.MarkupLine("[red]已取消初始化[/]");
+                AnsiConsole.MarkupLine($"[red]{Strings.InitCancelled}[/]");
                 return 1;
             }
 
             Directory.CreateDirectory(targetPath);
-            AnsiConsole.MarkupLine($"[green]✓ 已创建目录: {targetPath}[/]\n");
+            AnsiConsole.MarkupLine($"[green]{Strings.Format(Strings.DirCreated, targetPath)}[/]\n");
         }
 
         var localConfigPath = SlackConfig.GetLocalConfigPath(targetPath);
         var configExists = File.Exists(localConfigPath);
 
         Console.Clear();
-        AnsiConsole.Write(new FigletText("slack init").Color(Color.Cyan1));
+        AnsiConsole.Write(new FigletText(Strings.InitTitle).Color(Color.Cyan1));
         AnsiConsole.WriteLine();
 
         if (configExists)
         {
-            AnsiConsole.MarkupLine($"[yellow]⚠ 目录已存在 .slack 配置: [/][cyan]{targetPath}[/]\n");
+            AnsiConsole.MarkupLine($"[yellow]{Strings.Format(Strings.ConfigExists, targetPath)}[/]\n");
 
             var action = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("请选择操作:")
-                    .AddChoices(["📝 重新配置", "👀 查看当前配置", "🚪 取消"]));
+                    .Title(Strings.SelectAction)
+                    .AddChoices([
+                        Strings.ReconfigureOption,
+                        Strings.ViewConfigOption,
+                        Strings.CancelOption
+                    ]));
 
-            switch (action)
+            if (action == Strings.ReconfigureOption)
             {
-                case "📝 重新配置":
-                    break;
-                case "👀 查看当前配置":
-                    var existingConfig = SlackConfig.LoadLocal(targetPath);
-                    ShowConfig(existingConfig);
-                    AnsiConsole.WriteLine();
-                    if (!AnsiConsole.Confirm("是否重新配置?", false))
-                    {
-                        return 0;
-                    }
-                    break;
-                case "🚪 取消":
+                // Continue to reconfigure
+            }
+            else if (action == Strings.ViewConfigOption)
+            {
+                var existingConfig = SlackConfig.LoadLocal(targetPath);
+                ShowConfig(existingConfig);
+                AnsiConsole.WriteLine();
+                if (!AnsiConsole.Confirm(Strings.ReconfigureConfirm, false))
+                {
                     return 0;
+                }
+            }
+            else
+            {
+                return 0;
             }
         }
         else
         {
-            AnsiConsole.MarkupLine($"[dim]将在以下目录创建配置: [/][cyan]{targetPath}[/]");
-            AnsiConsole.MarkupLine($"[dim]配置文件路径: [/][cyan]{localConfigPath}[/]\n");
+            AnsiConsole.MarkupLine($"[dim]{Strings.Format(Strings.WillCreateConfigAt, targetPath)}[/]");
+            AnsiConsole.MarkupLine($"[dim]{Strings.Format(Strings.ConfigFilePath, localConfigPath)}[/]\n");
         }
 
         var config = RunConfigWizard(targetPath);
         config.SaveLocal(targetPath);
 
         Console.Clear();
-        AnsiConsole.Write(new Rule("[bold green]✓ 项目配置已初始化[/]").RuleStyle("green"));
+        AnsiConsole.Write(new Rule($"[bold green]{Strings.ProjectInitialized}[/]").RuleStyle("green"));
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine($"[dim]项目路径: [/][cyan]{targetPath}[/]\n");
+        AnsiConsole.MarkupLine($"[dim]{Strings.Format(Strings.ProjectPath, targetPath)}[/]\n");
         ShowConfig(config);
 
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[dim]运行 [cyan]slack up[/] 开始摸鱼！[/]");
-        AnsiConsole.MarkupLine("[dim]运行 [cyan]slack config[/] 修改配置[/]");
+        AnsiConsole.MarkupLine($"[dim]{Strings.RunSlackUp}[/]");
+        AnsiConsole.MarkupLine($"[dim]{Strings.RunSlackConfig}[/]");
 
         return 0;
     }
@@ -98,34 +105,34 @@ public class InitCommand : ICommand
         var config = new SlackConfig();
 
         // 第一步：选择语言
-        AnsiConsole.Write(new Rule("[bold blue]第 1 步：选择编程语言[/]").LeftJustified());
+        AnsiConsole.Write(new Rule($"[bold blue]{Strings.Step1SelectLanguage}[/]").LeftJustified());
         AnsiConsole.WriteLine();
 
         var languages = ConfigCommand.GetLanguages();
         config.Language = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("选择你正在使用的语言:")
+                .Title(Strings.SelectLanguagePrompt)
                 .PageSize(12)
                 .HighlightStyle(new Style(Color.Cyan1))
                 .AddChoices(languages));
 
         // 第二步：选择技术栈
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Rule("[bold blue]第 2 步：选择技术栈[/]").LeftJustified());
+        AnsiConsole.Write(new Rule($"[bold blue]{Strings.Step2SelectTechStack}[/]").LeftJustified());
         AnsiConsole.WriteLine();
 
         var techStacks = ConfigCommand.GetTechStacks(config.Language);
         var selectedStack = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title($"选择 [cyan]{config.Language}[/] 技术栈:")
+                .Title(Strings.Format(Strings.SelectTechStackPrompt, config.Language))
                 .PageSize(10)
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(techStacks));
 
-        if (selectedStack == "自定义...")
+        if (selectedStack == Strings.Custom)
         {
             selectedStack = AnsiConsole.Prompt(
-                new TextPrompt<string>("请输入你的技术栈名称:")
+                new TextPrompt<string>(Strings.EnterCustomTechStack)
                     .PromptStyle("green"));
         }
 
@@ -138,7 +145,7 @@ public class InitCommand : ICommand
 
         // 第三步：项目信息
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Rule("[bold blue]第 3 步：项目信息[/]").LeftJustified());
+        AnsiConsole.Write(new Rule($"[bold blue]{Strings.Step3ProjectInfo}[/]").LeftJustified());
         AnsiConsole.WriteLine();
 
         // 尝试从目标目录名推断项目名
@@ -146,25 +153,25 @@ public class InitCommand : ICommand
         var suggestedName = currentDir.Name.ToLower().Replace(" ", "-");
 
         config.ProjectName = AnsiConsole.Prompt(
-            new TextPrompt<string>("项目名称:")
+            new TextPrompt<string>(Strings.ProjectNamePrompt)
                 .DefaultValue(suggestedName)
                 .PromptStyle("cyan"));
 
         config.EnvName = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("运行环境:")
+                .Title(Strings.RuntimeEnvPrompt)
                 .AddChoices(["Production", "Staging", "Development", "CI/CD", "Local"]));
 
         // 可选：自定义包管理器和版本
-        if (AnsiConsole.Confirm("需要自定义包管理器和运行时版本吗?", false))
+        if (AnsiConsole.Confirm(Strings.CustomPackageManagerConfirm, false))
         {
             config.PackageManager = AnsiConsole.Prompt(
-                new TextPrompt<string>("包管理器:")
+                new TextPrompt<string>(Strings.PackageManagerPrompt)
                     .DefaultValue(config.PackageManager)
                     .PromptStyle("magenta"));
 
             config.RuntimeVersion = AnsiConsole.Prompt(
-                new TextPrompt<string>("运行时版本:")
+                new TextPrompt<string>(Strings.RuntimeVersionPrompt)
                     .DefaultValue(config.RuntimeVersion)
                     .PromptStyle("blue"));
         }
@@ -177,15 +184,15 @@ public class InitCommand : ICommand
         var table = new Table()
             .Border(TableBorder.Rounded)
             .BorderColor(Color.Green)
-            .AddColumn(new TableColumn("[bold]配置项[/]").Centered())
-            .AddColumn(new TableColumn("[bold]值[/]").Centered());
+            .AddColumn(new TableColumn($"[bold]{Strings.ConfigItem}[/]").Centered())
+            .AddColumn(new TableColumn($"[bold]{Strings.Value}[/]").Centered());
 
-        table.AddRow("🏷️  项目名称", $"[cyan]{config.ProjectName}[/]");
-        table.AddRow("💻 语言", $"[green]{config.Language}[/]");
-        table.AddRow("🛠️  技术栈", $"[yellow]{config.TechStack}[/]");
-        table.AddRow("📦 包管理器", $"[magenta]{config.PackageManager}[/]");
-        table.AddRow("🔢 运行时版本", $"[blue]{config.RuntimeVersion}[/]");
-        table.AddRow("🌍 环境", $"[white]{config.EnvName}[/]");
+        table.AddRow(Strings.ProjectName, $"[cyan]{config.ProjectName}[/]");
+        table.AddRow(Strings.Language, $"[green]{config.Language}[/]");
+        table.AddRow(Strings.TechStack, $"[yellow]{config.TechStack}[/]");
+        table.AddRow(Strings.PackageManager, $"[magenta]{config.PackageManager}[/]");
+        table.AddRow(Strings.RuntimeVersion, $"[blue]{config.RuntimeVersion}[/]");
+        table.AddRow(Strings.Environment, $"[white]{config.EnvName}[/]");
 
         AnsiConsole.Write(table);
     }

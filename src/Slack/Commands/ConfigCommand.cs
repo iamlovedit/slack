@@ -1,3 +1,4 @@
+using Slack.Localization;
 using Slack.Models;
 using Spectre.Console;
 
@@ -6,7 +7,7 @@ namespace Slack.Commands;
 public class ConfigCommand : ICommand
 {
     public string Name => "config";
-    public string Description => "配置技术栈、项目名称等参数";
+    public string Description => Strings.ConfigDescription;
     public string[] Aliases => [];
 
     public static string[] GetLanguages() => TechStacksByLanguage.Keys.ToArray();
@@ -16,31 +17,31 @@ public class ConfigCommand : ICommand
     // 语言 -> 技术栈映射
     private static readonly Dictionary<string, string[]> TechStacksByLanguage = new()
     {
-        ["C#"] = ["ASP.NET Core Web API", "Blazor", "MAUI", "Console App", "WPF", "gRPC Service", "Unity Game", "自定义..."],
-        ["TypeScript"] = ["Next.js", "React + Vite", "Vue 3", "NestJS", "Express", "Nuxt", "Angular", "Svelte", "Deno", "自定义..."],
-        ["JavaScript"] = ["React", "Vue", "Express", "Fastify", "Electron", "Node.js CLI", "自定义..."],
-        ["Python"] = ["FastAPI", "Django", "Flask", "Celery Worker", "CLI Tool", "PyTorch ML", "Scrapy", "自定义..."],
-        ["Go"] = ["Gin", "Echo", "Fiber", "gRPC", "CLI Tool", "Kubernetes Operator", "自定义..."],
-        ["Rust"] = ["Actix-web", "Axum", "Rocket", "Tokio", "CLI Tool", "Tauri", "WASM", "自定义..."],
-        ["Java"] = ["Spring Boot", "Quarkus", "Micronaut", "Gradle Plugin", "Android", "自定义..."],
-        ["Kotlin"] = ["Ktor", "Spring Boot", "Android", "Compose Desktop", "Compose Multiplatform", "自定义..."],
-        ["Swift"] = ["iOS App", "macOS App", "SwiftUI", "Vapor", "CLI Tool", "自定义..."],
-        ["PHP"] = ["Laravel", "Symfony", "WordPress Plugin", "Slim", "自定义..."],
-        ["Ruby"] = ["Ruby on Rails", "Sinatra", "Jekyll", "CLI Tool", "自定义..."],
-        ["C++"] = ["Qt", "Unreal Engine", "CLI Tool", "Embedded", "CMake Project", "自定义..."],
-        ["C"] = ["Embedded", "Linux Kernel", "CLI Tool", "自定义..."],
-        ["Scala"] = ["Play Framework", "Akka", "Spark Job", "ZIO", "自定义..."],
-        ["Elixir"] = ["Phoenix", "LiveView", "Nerves IoT", "CLI Tool", "自定义..."],
-        ["Dart"] = ["Flutter", "Flutter Web", "CLI Tool", "自定义..."],
-        ["Lua"] = ["Love2D Game", "Neovim Plugin", "OpenResty", "自定义..."],
-        ["Zig"] = ["CLI Tool", "Embedded", "WASM", "自定义..."],
-        ["Haskell"] = ["Yesod", "Servant", "CLI Tool", "自定义..."],
-        ["Clojure"] = ["Luminus", "Ring", "ClojureScript", "自定义..."],
-        ["F#"] = ["Giraffe", "Saturn", "SAFE Stack", "CLI Tool", "自定义..."],
-        ["OCaml"] = ["Dream", "CLI Tool", "自定义..."],
-        ["Nim"] = ["Jester", "CLI Tool", "自定义..."],
-        ["V"] = ["Vweb", "CLI Tool", "自定义..."],
-        ["Gleam"] = ["Wisp", "CLI Tool", "自定义..."],
+        ["C#"] = ["ASP.NET Core Web API", "Blazor", "MAUI", "Console App", "WPF", "gRPC Service", "Unity Game", "Custom..."],
+        ["TypeScript"] = ["Next.js", "React + Vite", "Vue 3", "NestJS", "Express", "Nuxt", "Angular", "Svelte", "Deno", "Custom..."],
+        ["JavaScript"] = ["React", "Vue", "Express", "Fastify", "Electron", "Node.js CLI", "Custom..."],
+        ["Python"] = ["FastAPI", "Django", "Flask", "Celery Worker", "CLI Tool", "PyTorch ML", "Scrapy", "Custom..."],
+        ["Go"] = ["Gin", "Echo", "Fiber", "gRPC", "CLI Tool", "Kubernetes Operator", "Custom..."],
+        ["Rust"] = ["Actix-web", "Axum", "Rocket", "Tokio", "CLI Tool", "Tauri", "WASM", "Custom..."],
+        ["Java"] = ["Spring Boot", "Quarkus", "Micronaut", "Gradle Plugin", "Android", "Custom..."],
+        ["Kotlin"] = ["Ktor", "Spring Boot", "Android", "Compose Desktop", "Compose Multiplatform", "Custom..."],
+        ["Swift"] = ["iOS App", "macOS App", "SwiftUI", "Vapor", "CLI Tool", "Custom..."],
+        ["PHP"] = ["Laravel", "Symfony", "WordPress Plugin", "Slim", "Custom..."],
+        ["Ruby"] = ["Ruby on Rails", "Sinatra", "Jekyll", "CLI Tool", "Custom..."],
+        ["C++"] = ["Qt", "Unreal Engine", "CLI Tool", "Embedded", "CMake Project", "Custom..."],
+        ["C"] = ["Embedded", "Linux Kernel", "CLI Tool", "Custom..."],
+        ["Scala"] = ["Play Framework", "Akka", "Spark Job", "ZIO", "Custom..."],
+        ["Elixir"] = ["Phoenix", "LiveView", "Nerves IoT", "CLI Tool", "Custom..."],
+        ["Dart"] = ["Flutter", "Flutter Web", "CLI Tool", "Custom..."],
+        ["Lua"] = ["Love2D Game", "Neovim Plugin", "OpenResty", "Custom..."],
+        ["Zig"] = ["CLI Tool", "Embedded", "WASM", "Custom..."],
+        ["Haskell"] = ["Yesod", "Servant", "CLI Tool", "Custom..."],
+        ["Clojure"] = ["Luminus", "Ring", "ClojureScript", "Custom..."],
+        ["F#"] = ["Giraffe", "Saturn", "SAFE Stack", "CLI Tool", "Custom..."],
+        ["OCaml"] = ["Dream", "CLI Tool", "Custom..."],
+        ["Nim"] = ["Jester", "CLI Tool", "Custom..."],
+        ["V"] = ["Vweb", "CLI Tool", "Custom..."],
+        ["Gleam"] = ["Wisp", "CLI Tool", "Custom..."],
     };
 
     public int Execute(string[] args)
@@ -50,7 +51,7 @@ public class ConfigCommand : ICommand
         {
             var newConfig = new SlackConfig();
             newConfig.Save();
-            AnsiConsole.MarkupLine("[green]✓ 配置已重置为默认值[/]");
+            AnsiConsole.MarkupLine($"[green]{Strings.ConfigResetSuccess}[/]");
             return 0;
         }
 
@@ -61,24 +62,30 @@ public class ConfigCommand : ICommand
             Console.Clear();
             ShowCurrentConfig(config);
 
+            var editOption = Strings.EditConfig;
+            var resetOption = Strings.ResetToDefault;
+            var backOption = Strings.CancelOption;
+
             var choice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("\n[bold]请选择操作:[/]")
-                    .AddChoices(["✏️  修改配置", "🔄 重置为默认", "🚪 返回"]));
+                    .Title($"\n[bold]{Strings.SelectOperation}[/]")
+                    .AddChoices([editOption, resetOption, backOption]));
 
-            switch (choice)
+            if (choice == editOption)
             {
-                case "✏️  修改配置":
-                    EditConfig(config);
-                    break;
-                case "🔄 重置为默认":
-                    config = new SlackConfig();
-                    config.Save();
-                    AnsiConsole.MarkupLine("[green]✓ 已重置为默认配置[/]");
-                    Thread.Sleep(1000);
-                    break;
-                case "🚪 返回":
-                    return 0;
+                EditConfig(config);
+            }
+            else if (choice == resetOption)
+            {
+                config = new SlackConfig();
+                config.Save();
+                Strings.ResetLocale();
+                AnsiConsole.MarkupLine($"[green]{Strings.ConfigResetSuccess}[/]");
+                Thread.Sleep(1000);
+            }
+            else
+            {
+                return 0;
             }
         }
     }
@@ -90,43 +97,44 @@ public class ConfigCommand : ICommand
         var table = new Table()
             .Border(TableBorder.Rounded)
             .BorderColor(Color.Blue)
-            .AddColumn(new TableColumn("[bold]配置项[/]").Centered())
-            .AddColumn(new TableColumn("[bold]当前值[/]").Centered());
+            .AddColumn(new TableColumn($"[bold]{Strings.ConfigItem}[/]").Centered())
+            .AddColumn(new TableColumn($"[bold]{Strings.CurrentValue}[/]").Centered());
 
-        table.AddRow("🏷️  项目名称", $"[cyan]{config.ProjectName}[/]");
-        table.AddRow("💻 语言", $"[green]{config.Language}[/]");
-        table.AddRow("🛠️  技术栈", $"[yellow]{config.TechStack}[/]");
-        table.AddRow("📦 包管理器", $"[magenta]{config.PackageManager}[/]");
-        table.AddRow("🔢 运行时版本", $"[blue]{config.RuntimeVersion}[/]");
-        table.AddRow("🌍 环境", $"[white]{config.EnvName}[/]");
+        table.AddRow(Strings.ProjectName, $"[cyan]{config.ProjectName}[/]");
+        table.AddRow(Strings.Language, $"[green]{config.Language}[/]");
+        table.AddRow(Strings.TechStack, $"[yellow]{config.TechStack}[/]");
+        table.AddRow(Strings.PackageManager, $"[magenta]{config.PackageManager}[/]");
+        table.AddRow(Strings.RuntimeVersion, $"[blue]{config.RuntimeVersion}[/]");
+        table.AddRow(Strings.Environment, $"[white]{config.EnvName}[/]");
+        table.AddRow(Strings.Locale, $"[cyan]{config.Locale ?? Strings.LocaleAuto}[/]");
 
         AnsiConsole.Write(table);
 
         // 显示模块预览
         var modules = config.GetModules();
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Rule("[dim]模块预览[/]").RuleStyle("grey").LeftJustified());
+        AnsiConsole.Write(new Rule($"[dim]{Strings.ModulePreview}[/]").RuleStyle("grey").LeftJustified());
         var moduleList = string.Join("  ", modules.Take(6).Select(m => $"[grey]{m}[/]"));
         AnsiConsole.MarkupLine(moduleList);
         if (modules.Length > 6)
         {
-            AnsiConsole.MarkupLine($"[dim]... 还有 {modules.Length - 6} 个模块[/]");
+            AnsiConsole.MarkupLine($"[dim]{Strings.Format(Strings.MoreModules, modules.Length - 6)}[/]");
         }
     }
 
     private static void EditConfig(SlackConfig config)
     {
         Console.Clear();
-        AnsiConsole.Write(new Rule("[bold blue]🔧 配置向导[/]"));
+        AnsiConsole.Write(new Rule($"[bold blue]{Strings.ConfigWizard}[/]"));
         AnsiConsole.WriteLine();
 
         // 第一步：选择语言
-        AnsiConsole.MarkupLine("[bold]第 1 步：选择编程语言[/]\n");
+        AnsiConsole.MarkupLine($"[bold]{Strings.Step1SelectLanguage}[/]\n");
 
         var languages = TechStacksByLanguage.Keys.ToList();
         var selectedLanguage = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("选择你正在使用的语言:")
+                .Title(Strings.SelectLanguagePrompt)
                 .PageSize(10)
                 .HighlightStyle(new Style(Color.Cyan1))
                 .AddChoices(languages));
@@ -135,20 +143,20 @@ public class ConfigCommand : ICommand
 
         // 第二步：选择技术栈
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[bold]第 2 步：选择技术栈[/]\n");
+        AnsiConsole.MarkupLine($"[bold]{Strings.Step2SelectTechStack}[/]\n");
 
         var techStacks = TechStacksByLanguage[selectedLanguage];
         var selectedStack = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title($"选择 [cyan]{selectedLanguage}[/] 技术栈:")
+                .Title(Strings.Format(Strings.SelectTechStackPrompt, selectedLanguage))
                 .PageSize(10)
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(techStacks));
 
-        if (selectedStack == "自定义...")
+        if (selectedStack == "Custom...")
         {
             selectedStack = AnsiConsole.Prompt(
-                new TextPrompt<string>("请输入你的技术栈名称:")
+                new TextPrompt<string>(Strings.EnterCustomTechStack)
                     .PromptStyle("green"));
         }
 
@@ -161,37 +169,67 @@ public class ConfigCommand : ICommand
 
         // 第三步：项目信息
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[bold]第 3 步：项目信息[/]\n");
+        AnsiConsole.MarkupLine($"[bold]{Strings.Step3ProjectInfo}[/]\n");
 
         config.ProjectName = AnsiConsole.Prompt(
-            new TextPrompt<string>("项目名称:")
+            new TextPrompt<string>(Strings.ProjectNamePrompt)
                 .DefaultValue(config.ProjectName)
                 .PromptStyle("cyan"));
 
         config.EnvName = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("运行环境:")
+                .Title(Strings.RuntimeEnvPrompt)
                 .AddChoices(["Production", "Staging", "Development", "CI/CD", "Local"]));
 
         // 可选：自定义包管理器和版本
-        if (AnsiConsole.Confirm("需要自定义包管理器和运行时版本吗?", false))
+        if (AnsiConsole.Confirm(Strings.CustomPackageManagerConfirm, false))
         {
             config.PackageManager = AnsiConsole.Prompt(
-                new TextPrompt<string>("包管理器:")
+                new TextPrompt<string>(Strings.PackageManagerPrompt)
                     .DefaultValue(config.PackageManager)
                     .PromptStyle("magenta"));
 
             config.RuntimeVersion = AnsiConsole.Prompt(
-                new TextPrompt<string>("运行时版本:")
+                new TextPrompt<string>(Strings.RuntimeVersionPrompt)
                     .DefaultValue(config.RuntimeVersion)
                     .PromptStyle("blue"));
         }
 
+        // 第四步：选择界面语言
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine($"[bold]{Strings.Step4SelectLocale}[/]\n");
+
+        var localeOptions = new List<string>
+        {
+            Strings.LocaleFollowSystem,
+            "🇨🇳 中文 (zh-CN)",
+            "🇺🇸 English (en-US)"
+        };
+
+        var selectedLocale = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title(Strings.SelectLocalePrompt)
+                .AddChoices(localeOptions));
+
+        if (selectedLocale == Strings.LocaleFollowSystem)
+        {
+            config.Locale = null;
+        }
+        else if (selectedLocale.Contains("zh-CN"))
+        {
+            config.Locale = "zh-CN";
+        }
+        else
+        {
+            config.Locale = "en-US";
+        }
+
         // 保存配置
         config.Save();
+        Strings.ResetLocale(); // 重置语言缓存以应用新设置
 
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Rule("[green]✓ 配置已保存[/]").RuleStyle("green"));
+        AnsiConsole.Write(new Rule($"[green]{Strings.ConfigSaved}[/]").RuleStyle("green"));
         Thread.Sleep(1500);
     }
 

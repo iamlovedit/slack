@@ -1,3 +1,4 @@
+using Slack.Localization;
 using Spectre.Console;
 using System.Reflection;
 
@@ -6,7 +7,7 @@ namespace Slack.Commands;
 public class VersionCommand : ICommand
 {
     public string Name => "version";
-    public string Description => "显示版本信息";
+    public string Description => Strings.VersionDescription;
     public string[] Aliases => ["-v", "--version"];
 
     public int Execute(string[] args)

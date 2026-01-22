@@ -1,3 +1,4 @@
+using Slack.Localization;
 using Spectre.Console;
 
 namespace Slack.Commands;
@@ -12,7 +13,7 @@ public class HelpCommand : ICommand
     }
 
     public string Name => "help";
-    public string Description => "显示帮助信息";
+    public string Description => Strings.HelpDescription;
     public string[] Aliases => ["-h", "--help"];
 
     public int Execute(string[] args)
@@ -22,8 +23,8 @@ public class HelpCommand : ICommand
 
         var table = new Table()
             .Border(TableBorder.Rounded)
-            .AddColumn("[bold]Command[/]")
-            .AddColumn("[bold]Description[/]");
+            .AddColumn($"[bold]{Strings.Command}[/]")
+            .AddColumn($"[bold]{Strings.Description}[/]");
 
         foreach (var command in _registry.GetAllCommands())
         {
@@ -33,8 +34,8 @@ public class HelpCommand : ICommand
 
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[dim]Usage: slack <command> [[options]][/]");
-        AnsiConsole.MarkupLine("[dim]Example: slack up[/]");
+        AnsiConsole.MarkupLine($"[dim]{Strings.Usage}: slack <command> [[options]][/]");
+        AnsiConsole.MarkupLine($"[dim]{Strings.Example}: slack up[/]");
         AnsiConsole.MarkupLine("[dim]         slack config -i[/]");
 
         return 0;

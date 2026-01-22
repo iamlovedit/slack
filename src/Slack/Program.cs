@@ -1,4 +1,5 @@
 using Slack.Commands;
+using Slack.Localization;
 using Spectre.Console;
 
 var registry = new CommandRegistry();
@@ -24,7 +25,7 @@ if (command != null)
 }
 else
 {
-    AnsiConsole.MarkupLine($"[red]Unknown command: {commandName}[/]");
+    AnsiConsole.MarkupLine($"[red]{Strings.Format(Strings.UnknownCommand, commandName)}[/]");
     var help = registry.GetCommand("help");
     help?.Execute([]);
     return 1;
