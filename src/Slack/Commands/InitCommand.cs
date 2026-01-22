@@ -11,7 +11,34 @@ public class InitCommand : ICommand
 
     public int Execute(string[] args)
     {
-        var localConfigPath = Path.Combine(Directory.GetCurrentDirectory(), ".slack", "config.json");
+        // 解析目标路径：支持 slack init 或 slack init <path>
+        var targetPath = args.Length > 0 ? args[0] : Directory.GetCurrentDirectory();
+
+        // 转换为绝对路径
+        if (!Path.IsPathRooted(targetPath))
+        {
+            targetPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), targetPath));
+        }
+
+        // 如果目标目录不存在，询问是否创建
+        if (!Directory.Exists(targetPath))
+        {
+            Console.Clear();
+            AnsiConsole.Write(new FigletText("slack init").Color(Color.Cyan1));
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"[yellow]目标目录不存在: [/][cyan]{targetPath}[/]\n");
+
+            if (!AnsiConsole.Confirm("是否创建该目录?", true))
+            {
+                AnsiConsole.MarkupLine("[red]已取消初始化[/]");
+                return 1;
+            }
+
+            Directory.CreateDirectory(targetPath);
+            AnsiConsole.MarkupLine($"[green]✓ 已创建目录: {targetPath}[/]\n");
+        }
+
+        var localConfigPath = SlackConfig.GetLocalConfigPath(targetPath);
         var configExists = File.Exists(localConfigPath);
 
         Console.Clear();
@@ -20,7 +47,7 @@ public class InitCommand : ICommand
 
         if (configExists)
         {
-            AnsiConsole.MarkupLine("[yellow]⚠ 当前目录已存在 .slack 配置[/]\n");
+            AnsiConsole.MarkupLine($"[yellow]⚠ 目录已存在 .slack 配置: [/][cyan]{targetPath}[/]\n");
 
             var action = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
@@ -32,7 +59,7 @@ public class InitCommand : ICommand
                 case "📝 重新配置":
                     break;
                 case "👀 查看当前配置":
-                    var existingConfig = SlackConfig.LoadLocal();
+                    var existingConfig = SlackConfig.LoadLocal(targetPath);
                     ShowConfig(existingConfig);
                     AnsiConsole.WriteLine();
                     if (!AnsiConsole.Confirm("是否重新配置?", false))
@@ -46,15 +73,17 @@ public class InitCommand : ICommand
         }
         else
         {
-            AnsiConsole.MarkupLine($"[dim]将在当前目录创建配置: [/][cyan]{localConfigPath}[/]\n");
+            AnsiConsole.MarkupLine($"[dim]将在以下目录创建配置: [/][cyan]{targetPath}[/]");
+            AnsiConsole.MarkupLine($"[dim]配置文件路径: [/][cyan]{localConfigPath}[/]\n");
         }
 
-        var config = RunConfigWizard();
-        config.SaveLocal();
+        var config = RunConfigWizard(targetPath);
+        config.SaveLocal(targetPath);
 
         Console.Clear();
         AnsiConsole.Write(new Rule("[bold green]✓ 项目配置已初始化[/]").RuleStyle("green"));
         AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine($"[dim]项目路径: [/][cyan]{targetPath}[/]\n");
         ShowConfig(config);
 
         AnsiConsole.WriteLine();
@@ -64,7 +93,7 @@ public class InitCommand : ICommand
         return 0;
     }
 
-    private static SlackConfig RunConfigWizard()
+    private static SlackConfig RunConfigWizard(string targetPath)
     {
         var config = new SlackConfig();
 
@@ -112,8 +141,8 @@ public class InitCommand : ICommand
         AnsiConsole.Write(new Rule("[bold blue]第 3 步：项目信息[/]").LeftJustified());
         AnsiConsole.WriteLine();
 
-        // 尝试从目录名推断项目名
-        var currentDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+        // 尝试从目标目录名推断项目名
+        var currentDir = new DirectoryInfo(targetPath);
         var suggestedName = currentDir.Name.ToLower().Replace(" ", "-");
 
         config.ProjectName = AnsiConsole.Prompt(

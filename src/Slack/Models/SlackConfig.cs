@@ -24,13 +24,16 @@ public class SlackConfig
     private static readonly string LocalConfigPath = Path.Combine(
         Directory.GetCurrentDirectory(), ".slack", "config.json");
 
-    public static SlackConfig LoadLocal()
+    public static SlackConfig LoadLocal() => LoadLocal(Directory.GetCurrentDirectory());
+
+    public static SlackConfig LoadLocal(string basePath)
     {
         try
         {
-            if (File.Exists(LocalConfigPath))
+            var configPath = GetLocalConfigPath(basePath);
+            if (File.Exists(configPath))
             {
-                var json = File.ReadAllText(LocalConfigPath);
+                var json = File.ReadAllText(configPath);
                 return JsonSerializer.Deserialize(json, SlackConfigContext.Default.SlackConfig) ?? new SlackConfig();
             }
         }
@@ -41,17 +44,23 @@ public class SlackConfig
         return new SlackConfig();
     }
 
-    public void SaveLocal()
+    public void SaveLocal() => SaveLocal(Directory.GetCurrentDirectory());
+
+    public void SaveLocal(string basePath)
     {
-        var dir = Path.GetDirectoryName(LocalConfigPath);
+        var configPath = GetLocalConfigPath(basePath);
+        var dir = Path.GetDirectoryName(configPath);
         if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
         {
             Directory.CreateDirectory(dir);
         }
 
         var json = JsonSerializer.Serialize(this, SlackConfigContext.Default.SlackConfig);
-        File.WriteAllText(LocalConfigPath, json);
+        File.WriteAllText(configPath, json);
     }
+
+    public static string GetLocalConfigPath(string basePath) =>
+        Path.Combine(basePath, ".slack", "config.json");
 
     public static SlackConfig Load()
     {
