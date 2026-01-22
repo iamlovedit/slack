@@ -11,6 +11,7 @@
 - 🚀 **逼真的构建输出** - 进度条、编译日志、依赖树，应有尽有
 - ⚡ **AOT 原生编译** - 启动快，体积小 (~5MB)
 - 🎨 **多技术栈支持** - Node.js、.NET、Python、Go、Rust、Java
+- 🌐 **多语言支持** - 支持简体中文和英文，自动跟随系统或手动指定
 - ⚠️ **真实感满满** - 随机 WARNING、可恢复 ERROR、忽快忽慢的进度条
 - 🔧 **高度可配置** - 自定义项目名、技术栈、运行环境
 
@@ -43,14 +44,9 @@ slack up
 ### 配置
 
 ```bash
-# 显示当前配置
-slack config --show
-
-# 交互式配置（推荐）
-slack config -i
-
-# 命令行配置
-slack config -t dotnet -p "awesome-api" -v "10.0" -e Production
+```bash
+# 进入交互式配置向导
+slack config
 
 # 重置为默认配置
 slack config --reset
@@ -58,13 +54,14 @@ slack config --reset
 
 ### 配置选项
 
-| 选项 | 说明 | 示例 |
-|------|------|------|
-| `-p, --project` | 项目名称 | `my-api` |
-| `-t, --tech` | 技术栈 | `node`/`dotnet`/`python`/`go`/`rust`/`java` |
-| `-m, --manager` | 包管理器 | `pnpm`/`NuGet`/`pip` |
-| `-v, --version` | 运行时版本 | `v22.1.0`/`10.0` |
-| `-e, --env` | 环境 | `Production`/`Development` |
+| 配置项 | 说明 | 示例 |
+|--------|------|------|
+| 项目名称 | 项目名称 | `my-api` |
+| 技术栈 | 技术栈 | `Node.js`/`.NET`/`Python` |
+| 包管理器 | 包管理器 | `pnpm`/`NuGet`/`pip` |
+| 运行时版本 | 运行时版本 | `v22.1.0`/`10.0` |
+| 环境 | 运行环境 | `Production`/`Development` |
+| 界面语言 | 界面显示语言 | `zh-CN`/`en-US`/`Follow System` |
 
 ## 🎭 效果展示
 

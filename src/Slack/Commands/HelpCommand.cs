@@ -36,7 +36,7 @@ public class HelpCommand : ICommand
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine($"[dim]{Strings.Usage}: slack <command> [[options]][/]");
         AnsiConsole.MarkupLine($"[dim]{Strings.Example}: slack up[/]");
-        AnsiConsole.MarkupLine("[dim]         slack config -i[/]");
+        AnsiConsole.MarkupLine("[dim]         slack config[/]");
 
         return 0;
     }
