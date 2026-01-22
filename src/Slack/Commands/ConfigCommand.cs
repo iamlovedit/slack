@@ -3,8 +3,16 @@ using Spectre.Console;
 
 namespace Slack.Commands;
 
-public static class ConfigCommand
+public class ConfigCommand : ICommand
 {
+    public string Name => "config";
+    public string Description => "配置技术栈、项目名称等参数";
+    public string[] Aliases => [];
+
+    public static string[] GetLanguages() => TechStacksByLanguage.Keys.ToArray();
+    public static string[] GetTechStacks(string language) => TechStacksByLanguage.GetValueOrDefault(language, []);
+    public static (string manager, string version) GetDefaultsForLanguage(string language, string stack) => GetDefaults(language, stack);
+
     // 语言 -> 技术栈映射
     private static readonly Dictionary<string, string[]> TechStacksByLanguage = new()
     {
@@ -35,7 +43,7 @@ public static class ConfigCommand
         ["Gleam"] = ["Wisp", "CLI Tool", "自定义..."],
     };
 
-    public static int Execute(string[] args)
+    public int Execute(string[] args)
     {
         // 处理 --reset 参数
         if (args.Contains("--reset"))

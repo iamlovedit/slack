@@ -3,8 +3,12 @@ using Spectre.Console;
 
 namespace Slack.Commands;
 
-public static class UpCommand
+public class UpCommand : ICommand
 {
+    public string Name => "up";
+    public string Description => "让你看起来很忙！终端刷屏输出，假装在工作";
+    public string[] Aliases => [];
+
     private static readonly string[] SpinnerTypes =
     [
         "Dots", "Dots2", "Dots3", "Line", "Star", "Flip",
@@ -51,7 +55,7 @@ public static class UpCommand
     private static string[] _actions = null!;
     private static Random _random = null!;
 
-    public static int Execute()
+    public int Execute(string[] args)
     {
         _config = SlackConfig.Load();
         _modules = _config.GetModules();

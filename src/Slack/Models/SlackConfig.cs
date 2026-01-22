@@ -21,6 +21,38 @@ public class SlackConfig
         System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile),
         ".config", "slack", "config.json");
 
+    private static readonly string LocalConfigPath = Path.Combine(
+        Directory.GetCurrentDirectory(), ".slack", "config.json");
+
+    public static SlackConfig LoadLocal()
+    {
+        try
+        {
+            if (File.Exists(LocalConfigPath))
+            {
+                var json = File.ReadAllText(LocalConfigPath);
+                return JsonSerializer.Deserialize(json, SlackConfigContext.Default.SlackConfig) ?? new SlackConfig();
+            }
+        }
+        catch
+        {
+            // ignore
+        }
+        return new SlackConfig();
+    }
+
+    public void SaveLocal()
+    {
+        var dir = Path.GetDirectoryName(LocalConfigPath);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        var json = JsonSerializer.Serialize(this, SlackConfigContext.Default.SlackConfig);
+        File.WriteAllText(LocalConfigPath, json);
+    }
+
     public static SlackConfig Load()
     {
         try

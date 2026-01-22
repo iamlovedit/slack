@@ -3,9 +3,13 @@ using Spectre.Console;
 
 namespace Slack.Commands;
 
-public static class InitCommand
+public class InitCommand : ICommand
 {
-    public static int Execute()
+    public string Name => "init";
+    public string Description => "初始化新的 slack 项目配置";
+    public string[] Aliases => [];
+
+    public int Execute(string[] args)
     {
         var localConfigPath = Path.Combine(Directory.GetCurrentDirectory(), ".slack", "config.json");
         var configExists = File.Exists(localConfigPath);
