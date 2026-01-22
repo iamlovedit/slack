@@ -1,5 +1,7 @@
 # 🐟 Slack - 上班摸鱼神器
 
+> **简体中文** | [English](./README_EN.md)
+
 > 当你正在看小说或摸鱼时，敲下 `slack up`，终端就会出现逼真的构建输出刷屏，让你看起来很忙！
 
 ![.NET 10](https://img.shields.io/badge/.NET-10.0-purple)
@@ -19,16 +21,33 @@
 
 ### 编译安装
 
+### 编译安装
+
+#### Windows (推荐)
+
+项目提供了一键发布脚本，默认生成独立运行的单文件可执行程序：
+
+```powershell
+# 生成单文件 release (位于 publish/ 目录)
+.\publish.ps1
+```
+
+#### GitHub Actions (CI/CD)
+
+本项目已配置 GitHub Actions，每次提交代码或打 tag 时会自动构建以下平台的单文件程序：
+
+- `win-x64` (Windows x64)
+- `linux-x64` (Linux x64)
+- `osx-x64` (macOS Intel)
+- `osx-arm64` (macOS Apple Silicon)
+
+你可以在 GitHub Actions 页面下载构建产物。
+
+#### 手动发布
+
 ```bash
-# 克隆项目
-git clone https://github.com/your-username/slack.git
-cd slack/src/Slack
-
-# AOT 发布
-dotnet publish -c Release
-
-# 复制到 PATH（可选）
-cp bin/Release/net10.0/osx-arm64/publish/slack /usr/local/bin/
+# 发布为单文件 (示例: macOS Apple Silicon)
+dotnet publish src/Slack/Slack.csproj -c Release -r osx-arm64
 ```
 
 ## 🚀 使用
