@@ -13,6 +13,7 @@ registry.Register(new UpgradeCommand());
 registry.Register(new VersionCommand());
 registry.Register(new UninstallCommand());
 registry.Register(new GuidCommand());
+registry.Register(new SettingsCommand());
 registry.Register(new HelpCommand(registry));
 
 if (args.Length == 0)

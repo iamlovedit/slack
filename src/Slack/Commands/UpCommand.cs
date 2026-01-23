@@ -10,15 +10,6 @@ public class UpCommand : ICommand
     public string Description => Strings.UpDescription;
     public string[] Aliases => [];
 
-    private static readonly string[] SpinnerTypes =
-    [
-        "Dots", "Dots2", "Dots3", "Line", "Star", "Flip",
-        "Hamburger", "GrowVertical", "GrowHorizontal", "Balloon",
-        "Noise", "Bounce", "BoxBounce", "Triangle", "Arc",
-        "Circle", "SquareCorners", "CircleQuarters", "CircleHalves"
-    ];
-
-    // 警告消息模板
     private static readonly string[] WarningTemplates =
     [
         "Deprecated API usage in {0}",
@@ -38,7 +29,6 @@ public class UpCommand : ICommand
         "Hardcoded credential detected in {0}"
     ];
 
-    // 错误消息（但会恢复）
     private static readonly string[] RetryableErrors =
     [
         "Connection timeout, retrying...",
@@ -50,24 +40,38 @@ public class UpCommand : ICommand
         "Stale lock detected, cleaning up..."
     ];
 
+    private static GlobalConfig _globalConfig = null!;
     private static SlackConfig _config = null!;
     private static string[] _modules = null!;
     private static string[] _taskPrefixes = null!;
     private static string[] _actions = null!;
     private static Random _random = null!;
+    private static DateTime _startTime;
+    private static int _warningCount = 0;
 
     public int Execute(string[] args)
     {
+        _globalConfig = GlobalConfig.Load();
         _config = SlackConfig.LoadLocal();
         _modules = _config.GetModules();
         _taskPrefixes = _config.GetTaskPrefixes();
         _actions = _config.GetActions();
+        
+        // 合并自定义消息
+        if (_config.CustomMessages.Count > 0)
+        {
+            var mixedActions = _actions.ToList();
+            mixedActions.AddRange(_config.CustomMessages);
+            _actions = mixedActions.ToArray();
+        }
+
         _random = new Random();
+        _startTime = DateTime.Now;
 
         var (manager, version) = _config.GetPackageInfo();
 
         AnsiConsole.MarkupLine($"[bold green]{Strings.Format(Strings.Building, _config.ProjectName)}[/]\n");
-        Thread.Sleep(300);
+        Thread.Sleep(GetDelay(300));
 
         // 显示初始化信息
         AnsiConsole.MarkupLine($"[grey]{Strings.Format(Strings.DetectedEnv, _config.EnvName)}[/]");
@@ -77,10 +81,35 @@ public class UpCommand : ICommand
 
         while (true)
         {
+            // 检查编译时长
+            if (_config.BuildDuration > 0)
+            {
+                var elapsed = (DateTime.Now - _startTime).TotalSeconds;
+                if (elapsed >= _config.BuildDuration)
+                {
+                    ShowBuildSuccess();
+                    break;
+                }
+            }
+
+            // 随机暂停 (如果启用)
+            if (_config.RandomPauses && _random.Next(100) < 5)
+            {
+                Thread.Sleep(GetDelay(_random.Next(500, 2000)));
+            }
+
             // 每隔一段时间随机触发警告或可恢复错误
-            if (_random.Next(100) < 15) // 15% 概率
+            // 警告概率受到已产生警告数量的限制
+            bool canWarn = _config.WarningMax > 0 && _warningCount < _config.WarningMax;
+            bool mustWarn = _config.WarningMin > 0 && _warningCount < _config.WarningMin;
+            
+            int warnProb = canWarn ? 15 : 0;
+            if (mustWarn) warnProb = 40; // 如果还没达到最小警告数，增加概率
+
+            if (_random.Next(100) < warnProb)
             {
                 ShowWarning();
+                _warningCount++;
             }
             else if (_random.Next(100) < 5) // 5% 概率
             {
@@ -129,6 +158,16 @@ public class UpCommand : ICommand
         return 0;
     }
 
+    private static int GetDelay(int baseDelay)
+    {
+        return _globalConfig.ScrollSpeed switch
+        {
+            "Slow" => baseDelay * 2,
+            "Fast" => (int)(baseDelay * 0.3),
+            _ => baseDelay
+        };
+    }
+
     private static void ShowWarning()
     {
         var template = WarningTemplates[_random.Next(WarningTemplates.Length)];
@@ -162,7 +201,7 @@ public class UpCommand : ICommand
         }
 
         AnsiConsole.MarkupLine($"[yellow]⚠ WARN:[/] [dim]{warning}[/]");
-        Thread.Sleep(_random.Next(100, 300));
+        Thread.Sleep(GetDelay(_random.Next(100, 300)));
     }
 
     private static void ShowRetryableError()
@@ -199,7 +238,7 @@ public class UpCommand : ICommand
             .SpinnerStyle(Style.Parse("red"))
             .Start($"[yellow]{Strings.Recovering}[/]", ctx =>
             {
-                Thread.Sleep(_random.Next(1500, 3500));
+                Thread.Sleep(GetDelay(_random.Next(1500, 3500)));
             });
 
         AnsiConsole.MarkupLine($"[green]✓[/] [dim]{Strings.RecoveredSuccess}[/]");
@@ -221,10 +260,10 @@ public class UpCommand : ICommand
             .Start(ctx =>
             {
                 var task = ctx.AddTask($"[cyan]{taskName}[/]");
-
+                var spinner = GetSpinnerByStyle();
+                
                 while (!task.IsFinished)
                 {
-                    // 模拟不均匀的进度：有时快，有时慢，偶尔卡住
                     double increment;
                     int delay;
 
@@ -232,7 +271,7 @@ public class UpCommand : ICommand
 
                     if (situation < 10) // 10% 卡住一会儿
                     {
-                        increment = _random.NextDouble() * 0.5; // 几乎不动
+                        increment = _random.NextDouble() * 0.5;
                         delay = _random.Next(300, 800);
                     }
                     else if (situation < 30) // 20% 缓慢进展
@@ -256,7 +295,6 @@ public class UpCommand : ICommand
                         delay = _random.Next(20, 50);
                     }
 
-                    // 在90%附近经常减速（模拟最后阶段总是最慢）
                     if (task.Percentage > 85 && task.Percentage < 99)
                     {
                         increment = Math.Min(increment, _random.Next(1, 5));
@@ -264,7 +302,7 @@ public class UpCommand : ICommand
                     }
 
                     task.Increment(increment);
-                    Thread.Sleep(delay);
+                    Thread.Sleep(GetDelay(delay));
                 }
             });
 
@@ -317,13 +355,12 @@ public class UpCommand : ICommand
                         else
                             increment = _random.Next(10, 25);
 
-                        // 90%以后减速
                         if (task.Percentage > 85)
                             increment = Math.Min(increment, _random.Next(1, 6));
 
                         task.Increment(increment);
                     }
-                    Thread.Sleep(_random.Next(50, 200));
+                    Thread.Sleep(GetDelay(_random.Next(50, 200)));
                 }
             });
 
@@ -336,22 +373,20 @@ public class UpCommand : ICommand
     private static void ShowStatusSpinner()
     {
         var action = _actions[_random.Next(_actions.Length)];
-        var spinnerName = SpinnerTypes[_random.Next(SpinnerTypes.Length)];
-        var spinner = GetSpinnerByName(spinnerName);
+        var spinner = GetSpinnerByStyle();
 
         AnsiConsole.Status()
             .Spinner(spinner)
             .SpinnerStyle(Style.Parse("green"))
             .Start(action, ctx =>
             {
-                Thread.Sleep(_random.Next(1000, 3000));
+                Thread.Sleep(GetDelay(_random.Next(1000, 3000)));
 
-                // 随机更换几次状态
                 var changes = _random.Next(1, 4);
                 for (int i = 0; i < changes; i++)
                 {
                     ctx.Status(_actions[_random.Next(_actions.Length)]);
-                    Thread.Sleep(_random.Next(500, 1500));
+                    Thread.Sleep(GetDelay(_random.Next(500, 1500)));
                 }
             });
 
@@ -369,26 +404,25 @@ public class UpCommand : ICommand
             var lineNum = _random.Next(50, 500);
             var time = _random.Next(10, 200);
 
-            // 随机决定是普通输出、警告还是慢速编译
             var outputType = _random.Next(100);
 
-            if (outputType < 8) // 8% 显示警告
+            if (outputType < 8)
             {
                 hasWarning = true;
                 AnsiConsole.MarkupLine($"[yellow]  ⚠ {module}:{lineNum} - Deprecated method call[/]");
-                Thread.Sleep(_random.Next(80, 200));
+                Thread.Sleep(GetDelay(_random.Next(80, 200)));
             }
-            else if (outputType < 15) // 7% 显示慢速
+            else if (outputType < 15)
             {
                 var slowTime = _random.Next(800, 2500);
                 AnsiConsole.MarkupLine($"[dim]  {module}:{lineNum} [/][red dim]({slowTime}ms)[/]");
-                Thread.Sleep(_random.Next(100, 300));
+                Thread.Sleep(GetDelay(_random.Next(100, 300)));
             }
             else
             {
                 var color = time > 150 ? "yellow" : "grey";
                 AnsiConsole.MarkupLine($"[{color}]  {module}:{lineNum} [dim]({time}ms)[/][/]");
-                Thread.Sleep(_random.Next(30, 150));
+                Thread.Sleep(GetDelay(_random.Next(30, 150)));
             }
         }
 
@@ -410,7 +444,6 @@ public class UpCommand : ICommand
             var subChildCount = _random.Next(1, 4);
             for (int j = 0; j < subChildCount; j++)
             {
-                // 偶尔标记为有问题的依赖
                 if (_random.Next(100) < 10)
                 {
                     child.AddNode($"[red]{_modules[_random.Next(_modules.Length)]} ⚠[/]");
@@ -424,14 +457,13 @@ public class UpCommand : ICommand
 
         AnsiConsole.Write(root);
         AnsiConsole.WriteLine();
-        Thread.Sleep(_random.Next(500, 1000));
+        Thread.Sleep(GetDelay(_random.Next(500, 1000)));
     }
 
     private static void ShowBuildSuccess()
     {
         AnsiConsole.WriteLine();
-        var warningCount = _random.Next(0, 12);
-        var time = _random.NextDouble() * 30 + 10; // 10-40秒
+        var elapsed = (DateTime.Now - _startTime).TotalSeconds;
 
         AnsiConsole.Write(new Rule($"[green]{Strings.BuildSummary}[/]").RuleStyle("green dim"));
 
@@ -443,11 +475,11 @@ public class UpCommand : ICommand
 
         table.AddRow($"[green]{Strings.Status}[/]", $"[bold green]{Strings.Success}[/]");
         table.AddRow($"[grey]{Strings.Project}[/]", $"[cyan]{_config.ProjectName}[/]");
-        table.AddRow($"[grey]{Strings.Duration}[/]", $"[white]{time:F1}s[/]");
+        table.AddRow($"[grey]{Strings.Duration}[/]", $"[white]{elapsed:F1}s[/]");
 
-        if (warningCount > 0)
+        if (_warningCount > 0)
         {
-            table.AddRow($"[grey]{Strings.Warnings}[/]", $"[yellow]{warningCount}[/]");
+            table.AddRow($"[grey]{Strings.Warnings}[/]", $"[yellow]{_warningCount}[/]");
         }
         table.AddRow($"[grey]{Strings.Errors}[/]", "[green]0[/]");
 
@@ -456,27 +488,18 @@ public class UpCommand : ICommand
         AnsiConsole.MarkupLine($"[bold green]{Strings.Format(Strings.BuildCompleted, _config.ProjectName)}[/]");
     }
 
-    private static Spinner GetSpinnerByName(string name) => name switch
+    private static Spinner GetSpinnerByStyle()
     {
-        "Dots" => Spinner.Known.Dots,
-        "Dots2" => Spinner.Known.Dots2,
-        "Dots3" => Spinner.Known.Dots3,
-        "Line" => Spinner.Known.Line,
-        "Star" => Spinner.Known.Star,
-        "Flip" => Spinner.Known.Flip,
-        "Hamburger" => Spinner.Known.Hamburger,
-        "GrowVertical" => Spinner.Known.GrowVertical,
-        "GrowHorizontal" => Spinner.Known.GrowHorizontal,
-        "Balloon" => Spinner.Known.Balloon,
-        "Noise" => Spinner.Known.Noise,
-        "Bounce" => Spinner.Known.Bounce,
-        "BoxBounce" => Spinner.Known.BoxBounce,
-        "Triangle" => Spinner.Known.Triangle,
-        "Arc" => Spinner.Known.Arc,
-        "Circle" => Spinner.Known.Circle,
-        "SquareCorners" => Spinner.Known.SquareCorners,
-        "CircleQuarters" => Spinner.Known.CircleQuarters,
-        "CircleHalves" => Spinner.Known.CircleHalves,
-        _ => Spinner.Known.Default
-    };
+        var style = _globalConfig.AnimationStyle ?? "Modern";
+        var spinners = style switch
+        {
+            "Classic" => new[] { Spinner.Known.Line, Spinner.Known.Dots, Spinner.Known.SimpleDots, Spinner.Known.SimpleDotsScrolling },
+            "Modern" => new[] { Spinner.Known.Dots2, Spinner.Known.Dots3, Spinner.Known.Bounce, Spinner.Known.CircleHalves },
+            "Minimal" => new[] { Spinner.Known.Point, Spinner.Known.SquareCorners },
+            "Fancy" => new[] { Spinner.Known.Star, Spinner.Known.Flip, Spinner.Known.Hamburger, Spinner.Known.GrowVertical, Spinner.Known.Clock },
+            _ => new[] { Spinner.Known.Dots }
+        };
+        
+        return spinners[_random.Next(spinners.Length)];
+    }
 }

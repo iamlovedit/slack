@@ -20,8 +20,8 @@ public static partial class Strings
             if (_currentLocale != null)
                 return _currentLocale;
 
-            // 从配置加载
-            var config = SlackConfig.Load();
+            // 从全局配置加载
+            var config = GlobalConfig.Load();
             if (!string.IsNullOrEmpty(config.Locale))
             {
                 _currentLocale = config.Locale;

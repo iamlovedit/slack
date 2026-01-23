@@ -79,7 +79,6 @@ public class ConfigCommand : ICommand
             {
                 config = new SlackConfig();
                 config.Save();
-                Strings.ResetLocale();
                 AnsiConsole.MarkupLine($"[green]{Strings.ConfigResetSuccess}[/]");
                 Thread.Sleep(1000);
             }
@@ -106,9 +105,21 @@ public class ConfigCommand : ICommand
         table.AddRow(Strings.PackageManager, $"[magenta]{config.PackageManager}[/]");
         table.AddRow(Strings.RuntimeVersion, $"[blue]{config.RuntimeVersion}[/]");
         table.AddRow(Strings.Environment, $"[white]{config.EnvName}[/]");
-        table.AddRow(Strings.Locale, $"[cyan]{config.Locale ?? Strings.LocaleAuto}[/]");
 
         AnsiConsole.Write(table);
+
+        // 显示高级设置
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule($"[dim]{Strings.ConfigAdvancedSettings}[/]").RuleStyle("grey").LeftJustified());
+        var advTable = new Table()
+            .Border(TableBorder.None)
+            .HideHeaders()
+            .AddColumn("")
+            .AddColumn("");
+        advTable.AddRow(Strings.ConfigBuildDuration, $"[grey]{(config.BuildDuration == 0 ? "∞" : $"{config.BuildDuration}s")}[/]");
+        advTable.AddRow(Strings.ConfigWarningRange, $"[grey]{config.WarningMin}-{config.WarningMax}[/]");
+        advTable.AddRow(Strings.ConfigRandomPauses, $"[grey]{(config.RandomPauses ? Strings.Yes : Strings.No)}[/]");
+        AnsiConsole.Write(advTable);
 
         // 显示模块预览
         var modules = config.GetModules();
@@ -195,38 +206,41 @@ public class ConfigCommand : ICommand
                     .PromptStyle("blue"));
         }
 
-        // 第四步：选择界面语言
+        // 第四步：高级设置
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine($"[bold]{Strings.Step4SelectLocale}[/]\n");
+        if (AnsiConsole.Confirm(Strings.ConfigConfigureAdvanced, false))
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"[bold]{Strings.ConfigAdvancedSettings}[/]\n");
 
-        var localeOptions = new List<string>
-        {
-            Strings.LocaleFollowSystem,
-            "🇨🇳 中文 (zh-CN)",
-            "🇺🇸 English (en-US)"
-        };
+            config.BuildDuration = AnsiConsole.Prompt(
+                new TextPrompt<int>(Strings.ConfigBuildDurationPrompt)
+                    .DefaultValue(config.BuildDuration)
+                    .Validate(n => n >= 0 ? ValidationResult.Success() : ValidationResult.Error("Must be >= 0")));
 
-        var selectedLocale = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title(Strings.SelectLocalePrompt)
-                .AddChoices(localeOptions));
+            config.WarningMin = AnsiConsole.Prompt(
+                new TextPrompt<int>(Strings.ConfigWarningMinPrompt)
+                    .DefaultValue(config.WarningMin)
+                    .Validate(n => n >= 0 ? ValidationResult.Success() : ValidationResult.Error("Must be >= 0")));
 
-        if (selectedLocale == Strings.LocaleFollowSystem)
-        {
-            config.Locale = null;
-        }
-        else if (selectedLocale.Contains("zh-CN"))
-        {
-            config.Locale = "zh-CN";
-        }
-        else
-        {
-            config.Locale = "en-US";
+            config.WarningMax = AnsiConsole.Prompt(
+                new TextPrompt<int>(Strings.ConfigWarningMaxPrompt)
+                    .DefaultValue(config.WarningMax)
+                    .Validate(n => n >= config.WarningMin ? ValidationResult.Success() : ValidationResult.Error($"Must be >= {config.WarningMin}")));
+
+            config.RandomPauses = AnsiConsole.Confirm(Strings.ConfigRandomPausesPrompt, config.RandomPauses);
+
+            var customMsgs = AnsiConsole.Prompt(
+                new TextPrompt<string>(Strings.ConfigCustomMessagesPrompt)
+                    .AllowEmpty());
+            if (!string.IsNullOrWhiteSpace(customMsgs))
+            {
+                config.CustomMessages = customMsgs.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+            }
         }
 
         // 保存配置
         config.Save();
-        Strings.ResetLocale(); // 重置语言缓存以应用新设置
 
         AnsiConsole.WriteLine();
         AnsiConsole.Write(new Rule($"[green]{Strings.ConfigSaved}[/]").RuleStyle("green"));

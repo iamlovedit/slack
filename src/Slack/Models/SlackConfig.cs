@@ -14,9 +14,29 @@ public class SlackConfig
     public string PackageManager { get; set; } = "NuGet";
     public string RuntimeVersion { get; set; } = ".NET 10.0";
     public string EnvName { get; set; } = "Production";
-    public string? Locale { get; set; } = null; // null = 跟随系统, "zh-CN", "en-US"
     public List<string> CustomModules { get; set; } = [];
     public List<string> CustomTasks { get; set; } = [];
+
+    /// <summary>
+    /// 编译持续时间（秒），0 表示无限
+    /// </summary>
+    public int BuildDuration { get; set; } = 0;
+
+    /// <summary>
+    /// 警告数量范围 [min, max]
+    /// </summary>
+    public int WarningMin { get; set; } = 0;
+    public int WarningMax { get; set; } = 15;
+
+    /// <summary>
+    /// 是否启用随机暂停，使输出更真实
+    /// </summary>
+    public bool RandomPauses { get; set; } = true;
+
+    /// <summary>
+    /// 自定义消息列表
+    /// </summary>
+    public List<string> CustomMessages { get; set; } = [];
 
     private static readonly string ConfigFilePath = Path.Combine(
         System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile),
