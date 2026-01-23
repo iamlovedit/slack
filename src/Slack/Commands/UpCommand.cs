@@ -58,7 +58,7 @@ public class UpCommand : ICommand
 
     public int Execute(string[] args)
     {
-        _config = SlackConfig.Load();
+        _config = SlackConfig.LoadLocal();
         _modules = _config.GetModules();
         _taskPrefixes = _config.GetTaskPrefixes();
         _actions = _config.GetActions();
