@@ -62,13 +62,13 @@ brew install slack
 **Linux / macOS:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.sh | bash
+curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/master/upgrade.sh | bash
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-irm https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.ps1 | iex
+irm https://raw.githubusercontent.com/iamlovedit/slack/master/upgrade.ps1 | iex
 ```
 
 ### Homebrew (macOS)
