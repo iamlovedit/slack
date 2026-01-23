@@ -86,6 +86,7 @@ brew upgrade slack
 | `slack up` | - | Start "working", display realistic build output |
 | `slack init [path]` | - | Initialize project configuration in current or specified directory |
 | `slack config` | - | Enter interactive configuration wizard |
+| `slack guid [count] [-f format]` | - | Batch generate GUIDs/UUIDs |
 | `slack upgrade` | - | Check and upgrade to the latest version |
 | `slack version` | `-v`, `--version` | Show version |
 | `slack help` | `-h`, `--help` | Show help |
@@ -206,6 +207,7 @@ src/Slack/
 │   ├── UpCommand.cs        # Slacking command implementation
 │   ├── InitCommand.cs      # Project initialization command
 │   ├── ConfigCommand.cs    # Configuration command implementation
+│   ├── GuidCommand.cs      # GUID generation command
 │   ├── VersionCommand.cs   # Version command implementation
 │   └── HelpCommand.cs      # Help command implementation
 ├── Localization/           # Multi-language support

@@ -86,6 +86,7 @@ brew upgrade slack
 | `slack up` | - | 开始"工作"，显示逼真的构建输出 |
 | `slack init [path]` | - | 在当前目录或指定路径初始化项目配置 |
 | `slack config` | - | 进入交互式配置向导 |
+| `slack guid [count] [-f format]` | - | 批量生成 GUID/UUID |
 | `slack upgrade` | - | 检查并升级到最新版本 |
 | `slack version` | `-v`, `--version` | 显示版本号 |
 | `slack help` | `-h`, `--help` | 显示帮助信息 |
@@ -206,6 +207,7 @@ src/Slack/
 │   ├── UpCommand.cs        # 摸鱼命令实现
 │   ├── InitCommand.cs      # 项目初始化命令
 │   ├── ConfigCommand.cs    # 配置命令实现
+│   ├── GuidCommand.cs      # GUID 生成命令
 │   ├── VersionCommand.cs   # 版本命令实现
 │   └── HelpCommand.cs      # 帮助命令实现
 ├── Localization/           # 多语言支持

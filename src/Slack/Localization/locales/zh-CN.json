@@ -113,5 +113,13 @@
     "uninstall_cleaning_global": "正在清理全局配置...",
     "uninstall_removing_binary": "正在删除可执行文件...",
     "uninstall_success": "Slack 已成功卸载!",
-    "uninstall_cancelled": "卸载已取消"
+    "uninstall_cancelled": "卸载已取消",
+    "guid_description": "批量生成 GUID/UUID",
+    "guid_count_prompt": "生成数量 (1-1000):",
+    "guid_count_validation": "请输入 1-1000 之间的数字",
+    "guid_format_prompt": "选择 GUID 格式:",
+    "guid_generated": "生成的 GUID",
+    "guid_copy_hint": "提示: 选中并复制上方的 GUID",
+    "guid_invalid_format": "无效的格式: {0}",
+    "guid_valid_formats": "有效的格式"
 }

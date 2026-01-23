@@ -113,5 +113,13 @@
   "uninstall_cleaning_global": "Cleaning global config...",
   "uninstall_removing_binary": "Removing binary...",
   "uninstall_success": "Slack has been uninstalled successfully!",
-  "uninstall_cancelled": "Uninstall cancelled"
+  "uninstall_cancelled": "Uninstall cancelled",
+  "guid_description": "Batch generate GUIDs/UUIDs",
+  "guid_count_prompt": "Number of GUIDs (1-1000):",
+  "guid_count_validation": "Please enter a number between 1 and 1000",
+  "guid_format_prompt": "Select GUID format:",
+  "guid_generated": "Generated GUIDs",
+  "guid_copy_hint": "Tip: Select and copy the GUIDs above",
+  "guid_invalid_format": "Invalid format: {0}",
+  "guid_valid_formats": "Valid formats"
 }
