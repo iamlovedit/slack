@@ -17,40 +17,17 @@
 - ⚠️ **Highly Realistic** - Random WARNINGs, recoverable ERRORs, progress bars that stall.
 - 🔧 **Highly Configurable** - Customize project name, tech stack, environment.
 
-## 📦 Installation
-
-### Compile & Install
-
-#### Windows (Recommended)
-
-The project provides a one-click publish script that generates a standalone single-file executable by default:
-
-```powershell
-# Generate single-file release (located in publish/ directory)
-.\publish.ps1
-```
-
-> **Note**: Defaults to standard single-file publish (good compatibility). If you have Visual Studio C++ Desktop Development tools installed, you can enable AOT compilation in the script for smaller file size.
-
-#### GitHub Actions (CI/CD)
-
-This project has GitHub Actions configured. Every time you push to the `release` branch or create a tag, it will automatically build single-file executables for the following platforms:
-
-- `win-x64` (Windows x64)
-- `linux-x64` (Linux x64)
-- `osx-x64` (macOS Intel)
-- `osx-arm64` (macOS Apple Silicon)
-
-You can download the build artifacts from the GitHub Actions page.
-
-#### Manual Publish
-
-```bash
-# Publish as single file (Example: macOS Apple Silicon)
-dotnet publish src/Slack/Slack.csproj -c Release -r osx-arm64
-```
-
 ## 🚀 Usage
+
+### Command Overview
+
+| Command | Aliases | Description |
+|---------|---------|-------------|
+| `slack up` | - | Start "working", display realistic build output |
+| `slack init [path]` | - | Initialize project configuration in current or specified directory |
+| `slack config` | - | Enter interactive configuration wizard |
+| `slack version` | `-v`, `--version` | Show version |
+| `slack help` | `-h`, `--help` | Show help |
 
 ### Start "Working"
 
@@ -58,7 +35,20 @@ dotnet publish src/Slack/Slack.csproj -c Release -r osx-arm64
 slack up
 ```
 
-Press `Q` or `Escape` to gracefully exit (shows build success). Press `Ctrl+C` to interrupt build.
+- Press `Q` or `Escape` to gracefully exit (shows build summary)
+- Press `Ctrl+C` to interrupt build
+
+### Initialize Project
+
+```bash
+# Initialize configuration in current directory
+slack init
+
+# Initialize configuration in specified path
+slack init ./my-project
+```
+
+The init command will guide you through the configuration wizard and create a `.slack.json` configuration file in the target directory.
 
 ### Configuration
 
@@ -70,16 +60,29 @@ slack config
 slack config --reset
 ```
 
+### Version & Help
+
+```bash
+# Show version
+slack version
+slack -v
+
+# Show help
+slack help
+slack -h
+```
+
 ### Configuration Options
 
 | Option | Description | Example |
 |--------|-------------|---------|
-| Project Name | Project Name | `my-api` |
-| Tech Stack | Technology Stack | `Node.js`/`.NET`/`Python` |
-| Package Manager | Package Manager | `pnpm`/`NuGet`/`pip` |
-| Runtime Version | Runtime Version | `v22.1.0`/`10.0` |
-| Environment | Environment | `Production`/`Development` |
-| Locale | Display Language | `zh-CN`/`en-US`/`Follow System` |
+| Project Name | Project name | `my-api` |
+| Language | Primary programming language | `C#`/`TypeScript`/`Python`/`Go`/`Rust` |
+| Tech Stack | Framework or tech stack | `ASP.NET Core`/`Next.js`/`FastAPI` |
+| Package Manager | Package manager | `NuGet`/`pnpm`/`pip`/`Cargo` |
+| Runtime Version | Runtime version | `.NET 10.0`/`Node v22.1.0` |
+| Environment | Runtime environment | `Production`/`Development`/`Staging` |
+| Locale | Display language | `zh-CN`/`en-US`/Follow System |
 
 ## 🎭 Showcase
 
@@ -139,8 +142,12 @@ src/Slack/
 ├── Program.cs              # Entry point, CLI parsing
 ├── Slack.csproj            # Project configuration
 ├── Commands/
-│   ├── UpCommand.cs        # Main logic
-│   └── ConfigCommand.cs    # Configuration logic
+│   ├── UpCommand.cs        # Slacking command implementation
+│   ├── InitCommand.cs      # Project initialization command
+│   ├── ConfigCommand.cs    # Configuration command implementation
+│   ├── VersionCommand.cs   # Version command implementation
+│   └── HelpCommand.cs      # Help command implementation
+├── Localization/           # Multi-language support
 └── Models/
     └── SlackConfig.cs      # Configuration model
 ```

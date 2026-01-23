@@ -17,40 +17,17 @@
 - ⚠️ **真实感满满** - 随机 WARNING、可恢复 ERROR、忽快忽慢的进度条
 - 🔧 **高度可配置** - 自定义项目名、技术栈、运行环境
 
-## 📦 安装
+##  使用
 
-### 编译安装
+### 命令一览
 
-### 编译安装
-
-#### Windows (推荐)
-
-项目提供了一键发布脚本，默认生成独立运行的单文件可执行程序：
-
-```powershell
-# 生成单文件 release (位于 publish/ 目录)
-.\publish.ps1
-```
-
-#### GitHub Actions (CI/CD)
-
-本项目已配置 GitHub Actions，每次提交代码或打 tag 时会自动构建以下平台的单文件程序：
-
-- `win-x64` (Windows x64)
-- `linux-x64` (Linux x64)
-- `osx-x64` (macOS Intel)
-- `osx-arm64` (macOS Apple Silicon)
-
-你可以在 GitHub Actions 页面下载构建产物。
-
-#### 手动发布
-
-```bash
-# 发布为单文件 (示例: macOS Apple Silicon)
-dotnet publish src/Slack/Slack.csproj -c Release -r osx-arm64
-```
-
-## 🚀 使用
+| 命令 | 别名 | 说明 |
+|------|------|------|
+| `slack up` | - | 开始"工作"，显示逼真的构建输出 |
+| `slack init [path]` | - | 在当前目录或指定路径初始化项目配置 |
+| `slack config` | - | 进入交互式配置向导 |
+| `slack version` | `-v`, `--version` | 显示版本号 |
+| `slack help` | `-h`, `--help` | 显示帮助信息 |
 
 ### 开始"工作"
 
@@ -58,11 +35,23 @@ dotnet publish src/Slack/Slack.csproj -c Release -r osx-arm64
 slack up
 ```
 
-按 `Q` 或 `Escape` 优雅退出（显示构建成功），按 `Ctrl+C` 中断构建。
+- 按 `Q` 或 `Escape` 优雅退出（显示构建成功总结）
+- 按 `Ctrl+C` 中断构建
+
+### 初始化项目
+
+```bash
+# 在当前目录初始化配置
+slack init
+
+# 在指定路径初始化配置
+slack init ./my-project
+```
+
+初始化命令会引导你完成配置向导，并在目标目录下创建 `.slack.json` 配置文件。
 
 ### 配置
 
-```bash
 ```bash
 # 进入交互式配置向导
 slack config
@@ -71,16 +60,29 @@ slack config
 slack config --reset
 ```
 
+### 版本与帮助
+
+```bash
+# 查看版本
+slack version
+slack -v
+
+# 查看帮助
+slack help
+slack -h
+```
+
 ### 配置选项
 
 | 配置项 | 说明 | 示例 |
 |--------|------|------|
 | 项目名称 | 项目名称 | `my-api` |
-| 技术栈 | 技术栈 | `Node.js`/`.NET`/`Python` |
-| 包管理器 | 包管理器 | `pnpm`/`NuGet`/`pip` |
-| 运行时版本 | 运行时版本 | `v22.1.0`/`10.0` |
-| 环境 | 运行环境 | `Production`/`Development` |
-| 界面语言 | 界面显示语言 | `zh-CN`/`en-US`/`Follow System` |
+| 编程语言 | 主要编程语言 | `C#`/`TypeScript`/`Python`/`Go`/`Rust` |
+| 技术栈 | 框架或技术栈 | `ASP.NET Core`/`Next.js`/`FastAPI` |
+| 包管理器 | 包管理器 | `NuGet`/`pnpm`/`pip`/`Cargo` |
+| 运行时版本 | 运行时版本 | `.NET 10.0`/`Node v22.1.0` |
+| 环境 | 运行环境 | `Production`/`Development`/`Staging` |
+| 界面语言 | 界面显示语言 | `zh-CN`/`en-US`/自动跟随系统 |
 
 ## 🎭 效果展示
 
@@ -141,7 +143,11 @@ src/Slack/
 ├── Slack.csproj            # 项目配置
 ├── Commands/
 │   ├── UpCommand.cs        # 摸鱼命令实现
-│   └── ConfigCommand.cs    # 配置命令实现
+│   ├── InitCommand.cs      # 项目初始化命令
+│   ├── ConfigCommand.cs    # 配置命令实现
+│   ├── VersionCommand.cs   # 版本命令实现
+│   └── HelpCommand.cs      # 帮助命令实现
+├── Localization/           # 多语言支持
 └── Models/
     └── SlackConfig.cs      # 配置模型
 ```
