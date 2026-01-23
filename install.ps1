@@ -1,5 +1,5 @@
 # Slack - Windows installation script (PowerShell)
-# Usage: irm https://raw.githubusercontent.com/iamlovedit/slack/main/install.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/iamlovedit/slack/master/install.ps1 | iex
 
 #Requires -Version 5.1
 

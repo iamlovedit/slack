@@ -1,6 +1,6 @@
 #!/bin/bash
 # Slack - Cross-platform upgrade script for Linux and macOS
-# Usage: curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/master/upgrade.sh | bash
 
 set -e
 
@@ -120,7 +120,7 @@ upgrade_slack() {
         warn "Slack is not installed. Running installation instead..."
         echo ""
         # Download and run install script
-        curl -fsSL "https://raw.githubusercontent.com/${REPO}/main/install.sh" | bash
+        curl -fsSL "https://raw.githubusercontent.com/${REPO}/master/install.sh" | bash
         exit 0
     fi
     

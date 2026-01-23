@@ -24,13 +24,13 @@
 **Linux / macOS:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/master/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-irm https://raw.githubusercontent.com/iamlovedit/slack/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/iamlovedit/slack/master/install.ps1 | iex
 ```
 
 ### Homebrew (macOS)

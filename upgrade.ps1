@@ -1,5 +1,5 @@
 # Slack - Windows upgrade script (PowerShell)
-# Usage: irm https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/iamlovedit/slack/master/upgrade.ps1 | iex
 
 #Requires -Version 5.1
 
@@ -136,7 +136,7 @@ function Upgrade-Slack {
         Write-Warn "Slack is not installed. Running installation instead..."
         Write-Host ""
         # Download and run install script
-        Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/$Repo/main/install.ps1")
+        Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/$Repo/master/install.ps1")
         return
     }
     

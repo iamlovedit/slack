@@ -1,6 +1,6 @@
 #!/bin/bash
 # Slack - Cross-platform installation script for Linux and macOS
-# Usage: curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/master/install.sh | bash
 
 set -e
 
