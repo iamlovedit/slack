@@ -13,9 +13,7 @@
   "reset": "Reset",
   "save": "Save",
   "custom": "Custom...",
-  
   "help_description": "Show help information",
-  
   "init_description": "Initialize new slack project configuration",
   "init_title": "slack init",
   "dir_not_exist": "Target directory does not exist: {0}",
@@ -34,7 +32,6 @@
   "project_path": "Project path: {0}",
   "run_slack_up": "Run [cyan]slack up[/] to start slacking!",
   "run_slack_config": "Run [cyan]slack config[/] to modify settings",
-  
   "step1_select_language": "Step 1: Select Programming Language",
   "select_language_prompt": "Select your programming language:",
   "step2_select_tech_stack": "Step 2: Select Tech Stack",
@@ -46,7 +43,6 @@
   "custom_package_manager_confirm": "Do you want to customize package manager and runtime version?",
   "package_manager_prompt": "Package manager:",
   "runtime_version_prompt": "Runtime version:",
-  
   "config_description": "Configure tech stack, project name, and other settings",
   "config_reset_success": "✓ Configuration reset to defaults",
   "select_operation": "Select an operation:",
@@ -56,7 +52,6 @@
   "config_wizard": "🔧 Configuration Wizard",
   "module_preview": "Module Preview",
   "more_modules": "... and {0} more modules",
-  
   "config_item": "Config Item",
   "current_value": "Current Value",
   "value": "Value",
@@ -68,7 +63,6 @@
   "environment": "🌍 Environment",
   "locale": "🌐 Locale",
   "locale_auto": "Follow System",
-  
   "up_description": "Make you look busy! Scroll terminal output to pretend working",
   "building": "🚀 Building {0}...",
   "detected_env": "[[INFO]] Detected environment: {0}",
@@ -87,10 +81,37 @@
   "completed_with_warnings": "└─ Completed with warnings",
   "with_warnings": "(with {0} warnings)",
   "completed": "completed",
-  
   "version_description": "Show version information",
-  
   "step4_select_locale": "Step 4: Select UI Language",
   "select_locale_prompt": "Select UI language:",
-  "locale_follow_system": "🌐 Follow System"
+  "locale_follow_system": "🌐 Follow System",
+  "upgrade_description": "Check and upgrade to the latest version",
+  "upgrade_current_version": "Current version",
+  "upgrade_latest_version": "Latest version",
+  "upgrade_platform": "Platform",
+  "upgrade_checking_latest": "Checking for latest version...",
+  "upgrade_already_latest": "You already have the latest version ({0}). No upgrade needed.",
+  "upgrade_available": "New version available: {0} → {1}",
+  "upgrade_confirm": "Do you want to upgrade now?",
+  "upgrade_cancelled": "Upgrade cancelled",
+  "upgrade_downloading": "Downloading...",
+  "upgrade_extracting": "Extracting...",
+  "upgrade_installing": "Installing...",
+  "upgrade_success": "Upgraded successfully: {0} → {1}",
+  "upgrade_failed": "Upgrade failed: {0}",
+  "upgrade_restart_hint": "Please restart your terminal to use the new version",
+  "uninstall_description": "Uninstall slack and remove configuration files",
+  "uninstall_title": "uninstall",
+  "uninstall_confirm": "Are you sure you want to uninstall slack?",
+  "uninstall_select_level": "Select cleanup level:",
+  "uninstall_level_binary": "🗑️  Only remove binary (keep all configs)",
+  "uninstall_level_global": "🧹 Remove binary + global config",
+  "uninstall_level_full": "💥 Full cleanup (binary + global + all project configs)",
+  "uninstall_registered_projects": "Registered projects ({0}):",
+  "uninstall_no_projects": "No registered projects found",
+  "uninstall_cleaning_project": "Cleaning project config: {0}",
+  "uninstall_cleaning_global": "Cleaning global config...",
+  "uninstall_removing_binary": "Removing binary...",
+  "uninstall_success": "Slack has been uninstalled successfully!",
+  "uninstall_cancelled": "Uninstall cancelled"
 }

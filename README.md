@@ -17,7 +17,67 @@
 - ⚠️ **真实感满满** - 随机 WARNING、可恢复 ERROR、忽快忽慢的进度条
 - 🔧 **高度可配置** - 自定义项目名、技术栈、运行环境
 
-##  使用
+## 📦 安装
+
+### 一键安装
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/iamlovedit/slack/main/install.ps1 | iex
+```
+
+### Homebrew (macOS)
+
+```bash
+brew tap iamlovedit/tap
+brew install slack
+```
+
+### 手动安装
+
+从 [GitHub Releases](https://github.com/iamlovedit/slack/releases) 下载对应平台的压缩包，解压后将可执行文件放到 PATH 目录下即可。
+
+| 平台 | 架构 | 文件 |
+|------|------|------|
+| Windows | x64 | `slack-win-x64.zip` |
+| Windows | ARM64 | `slack-win-arm64.zip` |
+| Linux | x64 | `slack-linux-x64.tar.gz` |
+| Linux | ARM64 | `slack-linux-arm64.tar.gz` |
+| Linux (musl) | x64 | `slack-linux-musl-x64.tar.gz` |
+| Linux (musl) | ARM64 | `slack-linux-musl-arm64.tar.gz` |
+| macOS | x64 | `slack-osx-x64.tar.gz` |
+| macOS | ARM64 | `slack-osx-arm64.tar.gz` |
+
+## 🔄 升级
+
+### 一键升级
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.ps1 | iex
+```
+
+### Homebrew (macOS)
+
+```bash
+brew upgrade slack
+```
+
+## 🚀 使用
 
 ### 命令一览
 
@@ -26,6 +86,7 @@
 | `slack up` | - | 开始"工作"，显示逼真的构建输出 |
 | `slack init [path]` | - | 在当前目录或指定路径初始化项目配置 |
 | `slack config` | - | 进入交互式配置向导 |
+| `slack upgrade` | - | 检查并升级到最新版本 |
 | `slack version` | `-v`, `--version` | 显示版本号 |
 | `slack help` | `-h`, `--help` | 显示帮助信息 |
 

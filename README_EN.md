@@ -17,6 +17,66 @@
 - ⚠️ **Highly Realistic** - Random WARNINGs, recoverable ERRORs, progress bars that stall.
 - 🔧 **Highly Configurable** - Customize project name, tech stack, environment.
 
+## 📦 Installation
+
+### One-Line Install
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/iamlovedit/slack/main/install.ps1 | iex
+```
+
+### Homebrew (macOS)
+
+```bash
+brew tap iamlovedit/tap
+brew install slack
+```
+
+### Manual Installation
+
+Download the appropriate archive for your platform from [GitHub Releases](https://github.com/iamlovedit/slack/releases), extract it, and place the executable in your PATH.
+
+| Platform | Architecture | File |
+|----------|--------------|------|
+| Windows | x64 | `slack-win-x64.zip` |
+| Windows | ARM64 | `slack-win-arm64.zip` |
+| Linux | x64 | `slack-linux-x64.tar.gz` |
+| Linux | ARM64 | `slack-linux-arm64.tar.gz` |
+| Linux (musl) | x64 | `slack-linux-musl-x64.tar.gz` |
+| Linux (musl) | ARM64 | `slack-linux-musl-arm64.tar.gz` |
+| macOS | x64 | `slack-osx-x64.tar.gz` |
+| macOS | ARM64 | `slack-osx-arm64.tar.gz` |
+
+## 🔄 Upgrade
+
+### One-Line Upgrade
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/iamlovedit/slack/main/upgrade.ps1 | iex
+```
+
+### Homebrew (macOS)
+
+```bash
+brew upgrade slack
+```
+
 ## 🚀 Usage
 
 ### Command Overview
@@ -26,6 +86,7 @@
 | `slack up` | - | Start "working", display realistic build output |
 | `slack init [path]` | - | Initialize project configuration in current or specified directory |
 | `slack config` | - | Enter interactive configuration wizard |
+| `slack upgrade` | - | Check and upgrade to the latest version |
 | `slack version` | `-v`, `--version` | Show version |
 | `slack help` | `-h`, `--help` | Show help |
 

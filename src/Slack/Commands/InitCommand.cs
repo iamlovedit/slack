@@ -86,6 +86,7 @@ public class InitCommand : ICommand
 
         var config = RunConfigWizard(targetPath);
         config.SaveLocal(targetPath);
+        ProjectRegistry.RegisterProject(targetPath, config.ProjectName);
 
         Console.Clear();
         AnsiConsole.Write(new Rule($"[bold green]{Strings.ProjectInitialized}[/]").RuleStyle("green"));
