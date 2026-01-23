@@ -14,7 +14,7 @@ jobs:
       matrix:
         include:
           - rid: win-x64
-            os: ubuntu-latest
+            os: windows-latest
           - rid: linux-x64
             os: ubuntu-latest
           - rid: osx-x64
