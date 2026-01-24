@@ -158,5 +158,22 @@
     "option_fancy": "花哨",
     "guid_copy_confirm": "是否复制到剪贴板?",
     "guid_copied": "✓ 已复制到剪贴板!",
-    "guid_copy_failed": "⚠ 无法复制到剪贴板: {0}"
+    "guid_copy_failed": "⚠ 无法复制到剪贴板: {0}",
+    "sysinfo_description": "实时显示系统状态 (CPU, GPU, 内存, 磁盘, 网络)",
+    "sysinfo_title": "系统监控",
+    "sysinfo_cpu": "CPU 使用率",
+    "sysinfo_gpu": "GPU 使用率",
+    "sysinfo_gpu_memory": "GPU 显存",
+    "sysinfo_gpu_unavailable": "不可用",
+    "sysinfo_memory": "内存",
+    "sysinfo_disk": "磁盘 I/O",
+    "sysinfo_disk_read": "读取",
+    "sysinfo_disk_write": "写入",
+    "sysinfo_network": "网络",
+    "sysinfo_network_up": "上传",
+    "sysinfo_network_down": "下载",
+    "sysinfo_press_any_key": "按任意键退出...",
+    "sysinfo_used": "已用",
+    "sysinfo_free": "可用",
+    "sysinfo_total": "总计"
 }

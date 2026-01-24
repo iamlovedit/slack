@@ -158,5 +158,22 @@
   "option_fancy": "Fancy",
   "guid_copy_confirm": "Copy to clipboard?",
   "guid_copied": "✓ Copied to clipboard!",
-  "guid_copy_failed": "⚠ Clipboard copy failed: {0}"
+  "guid_copy_failed": "⚠ Clipboard copy failed: {0}",
+  "sysinfo_description": "Display real-time system status (CPU, GPU, Memory, Disk, Network)",
+  "sysinfo_title": "System Monitor",
+  "sysinfo_cpu": "CPU Usage",
+  "sysinfo_gpu": "GPU Usage",
+  "sysinfo_gpu_memory": "GPU Memory",
+  "sysinfo_gpu_unavailable": "N/A",
+  "sysinfo_memory": "Memory",
+  "sysinfo_disk": "Disk I/O",
+  "sysinfo_disk_read": "Read",
+  "sysinfo_disk_write": "Write",
+  "sysinfo_network": "Network",
+  "sysinfo_network_up": "Upload",
+  "sysinfo_network_down": "Download",
+  "sysinfo_press_any_key": "Press any key to exit...",
+  "sysinfo_used": "Used",
+  "sysinfo_free": "Free",
+  "sysinfo_total": "Total"
 }
