@@ -22,7 +22,7 @@ public class VersionCommand : ICommand
         {
             version = version.Split('+')[0];
         }
-        AnsiConsole.MarkupLine($"[green]slack[/] version [cyan]{version}[/]");
+        AnsiConsole.MarkupLine($"[green]slack[/] version [cyan]v{version}[/]");
         return 0;
     }
 }

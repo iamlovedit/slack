@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.IO.Compression;
 using Slack.Localization;
+using Slack.Serialization;
+using System.Text.Json.Serialization;
 using Spectre.Console;
 
 namespace Slack.Commands;
@@ -118,8 +120,9 @@ public class UpgradeCommand : ICommand
         using var client = new HttpClient();
         client.DefaultRequestHeaders.UserAgent.ParseAdd("slack-upgrader/1.0");
 
-        var response = await client.GetFromJsonAsync<GitHubRelease>(
-            $"https://api.github.com/repos/{Repo}/releases/latest");
+        var response = await client.GetFromJsonAsync(
+            $"https://api.github.com/repos/{Repo}/releases/latest",
+            AppJsonContext.Default.GitHubRelease);
 
         return response?.TagName ?? throw new Exception("Failed to get latest version");
     }
@@ -328,5 +331,8 @@ Start-Sleep -Seconds 2
             });
     }
 
-    private record GitHubRelease(string TagName);
 }
+
+internal record GitHubRelease(
+    [property: JsonPropertyName("tag_name")] string TagName
+);
