@@ -9,6 +9,7 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <AssemblyName>slack</AssemblyName>
     <IsAotCompatible>true</IsAotCompatible>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
 
   <ItemGroup>
