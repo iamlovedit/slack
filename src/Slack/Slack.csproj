@@ -17,13 +17,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
+    <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
 
   <!-- Source Generator 引用 -->
   <ItemGroup>
-    <ProjectReference Include="..\Slack.Generators\Slack.Generators.csproj" 
-                      OutputItemType="Analyzer" 
-                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Slack.Generators\Slack.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <!-- JSON 语言文件作为 AdditionalFiles 传递给 Generator -->

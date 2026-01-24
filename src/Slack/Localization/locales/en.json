@@ -155,5 +155,8 @@
   "option_classic": "Classic",
   "option_modern": "Modern",
   "option_minimal": "Minimal",
-  "option_fancy": "Fancy"
+  "option_fancy": "Fancy",
+  "guid_copy_confirm": "Copy to clipboard?",
+  "guid_copied": "✓ Copied to clipboard!",
+  "guid_copy_failed": "⚠ Clipboard copy failed: {0}"
 }

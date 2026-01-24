@@ -1,5 +1,6 @@
 using Slack.Localization;
 using Spectre.Console;
+using TextCopy;
 
 namespace Slack.Commands;
 
@@ -24,7 +25,9 @@ public class GuidCommand : ICommand
     {
         int count = 0;
         string? format = null;
-
+        bool autoCopy = false;
+        AnsiConsole.Write(new FigletText("guid").Color(Color.Green));
+        AnsiConsole.WriteLine();
         // 解析命令行参数
         for (int i = 0; i < args.Length; i++)
         {
@@ -41,6 +44,10 @@ public class GuidCommand : ICommand
             {
                 format = args[++i].ToUpperInvariant();
             }
+            else if (arg == "-c" || arg == "--copy")
+            {
+                autoCopy = true;
+            }
             else if (int.TryParse(arg, out var n) && n > 0 && count == 0)
             {
                 // 支持直接传递数字作为第一个参数
@@ -49,7 +56,7 @@ public class GuidCommand : ICommand
         }
 
         // 如果没有参数，进入交互模式
-        if (count == 0 && format == null)
+        if (count == 0 && format == null && !autoCopy)
         {
             return InteractiveMode();
         }
@@ -67,13 +74,19 @@ public class GuidCommand : ICommand
         }
 
         // 生成并输出 GUID
-        GenerateGuids(count, format);
+        var guids = GenerateGuids(count, format);
+
+        // 自动复制
+        if (autoCopy)
+        {
+            CopyToClipboard(guids);
+        }
+
         return 0;
     }
 
     private int InteractiveMode()
     {
-        Console.Clear();
         AnsiConsole.WriteLine();
 
         // 选择数量
@@ -104,25 +117,35 @@ public class GuidCommand : ICommand
         AnsiConsole.WriteLine();
 
         // 生成并输出 GUID
-        GenerateGuids(count, format);
+        var guids = GenerateGuids(count, format);
 
         AnsiConsole.WriteLine();
         AnsiConsole.Write(new Rule().RuleStyle("grey"));
         
-        // 提示复制操作
-        AnsiConsole.MarkupLine($"[dim]{Strings.GuidCopyHint}[/]");
+        // 询问是否复制
+        if (AnsiConsole.Confirm(Strings.GuidCopyConfirm, true))
+        {
+             CopyToClipboard(guids);
+        }
+        else
+        {
+            // 提示复制操作
+            AnsiConsole.MarkupLine($"[dim]{Strings.GuidCopyHint}[/]");
+        }
 
         return 0;
     }
 
-    private void GenerateGuids(int count, string format)
+    private List<string> GenerateGuids(int count, string format)
     {
         var formatter = Formats[format].Formatter;
+        var results = new List<string>();
         
         for (int i = 0; i < count; i++)
         {
             var guid = Guid.NewGuid();
             var formatted = formatter(guid);
+            results.Add(formatted);
             
             if (count == 1)
             {
@@ -132,6 +155,21 @@ public class GuidCommand : ICommand
             {
                 AnsiConsole.MarkupLine($"[grey]{i + 1,4}.[/] [cyan]{formatted}[/]");
             }
+        }
+        return results;
+    }
+
+    private void CopyToClipboard(List<string> guids)
+    {
+        try
+        {
+            var text = string.Join(Environment.NewLine, guids);
+            ClipboardService.SetText(text);
+            AnsiConsole.MarkupLine($"[green]{Strings.GuidCopied}[/]");
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]{Strings.Format(Strings.GuidCopyFailed, ex.Message)}[/]");
         }
     }
 

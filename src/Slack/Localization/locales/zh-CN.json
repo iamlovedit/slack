@@ -155,5 +155,8 @@
     "option_classic": "经典",
     "option_modern": "现代",
     "option_minimal": "极简",
-    "option_fancy": "花哨"
+    "option_fancy": "花哨",
+    "guid_copy_confirm": "是否复制到剪贴板?",
+    "guid_copied": "✓ 已复制到剪贴板!",
+    "guid_copy_failed": "⚠ 无法复制到剪贴板: {0}"
 }
