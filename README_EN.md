@@ -87,6 +87,7 @@ brew upgrade slack
 | `slack init [path]` | - | Initialize project configuration in current or specified directory |
 | `slack config` | - | Enter interactive configuration wizard |
 | `slack guid [count] [-f format]` | - | Batch generate GUIDs/UUIDs |
+| `slack figlet [text]` | - | Generate ASCII art text |
 | `slack upgrade` | - | Check and upgrade to the latest version |
 | `slack version` | `-v`, `--version` | Show version |
 | `slack help` | `-h`, `--help` | Show help |
@@ -132,6 +133,11 @@ slack -v
 # Show help
 slack help
 slack -h
+
+# Generate ASCII Banner
+slack figlet "Hello World"
+# Interactive Mode
+slack figlet
 ```
 
 ### Configuration Options

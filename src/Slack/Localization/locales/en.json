@@ -175,5 +175,16 @@
   "sysinfo_press_any_key": "Press any key to exit...",
   "sysinfo_used": "Used",
   "sysinfo_free": "Free",
-  "sysinfo_total": "Total"
+  "sysinfo_total": "Total",
+  "figlet_description": "Generate ASCII art text using FigletText",
+  "figlet_text_prompt": "Enter text to display:",
+  "figlet_color_prompt": "Select a color:",
+  "figlet_empty_text": "Text cannot be empty",
+  "figlet_invalid_color": "Invalid color: {0}",
+  "figlet_valid_colors": "Valid colors",
+  "figlet_ascii_only": "Only ASCII characters are allowed",
+  "figlet_copy_confirm": "Copy to clipboard?",
+  "figlet_copied": "✓ Copied to clipboard!",
+  "figlet_copy_failed": "⚠ Clipboard copy failed: {0}",
+  "figlet_copy_hint": "Tip: Select and copy the text above"
 }

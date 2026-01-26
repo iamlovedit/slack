@@ -87,6 +87,7 @@ brew upgrade slack
 | `slack init [path]` | - | 在当前目录或指定路径初始化项目配置 |
 | `slack config` | - | 进入交互式配置向导 |
 | `slack guid [count] [-f format]` | - | 批量生成 GUID/UUID |
+| `slack figlet [text]` | - | 生成 ASCII 艺术文字 |
 | `slack upgrade` | - | 检查并升级到最新版本 |
 | `slack version` | `-v`, `--version` | 显示版本号 |
 | `slack help` | `-h`, `--help` | 显示帮助信息 |
@@ -132,6 +133,11 @@ slack -v
 # 查看帮助
 slack help
 slack -h
+
+# 生成 ASCII 艺术文字
+slack figlet "Hello World"
+# 交互模式
+slack figlet
 ```
 
 ### 配置选项

@@ -175,5 +175,16 @@
     "sysinfo_press_any_key": "按任意键退出...",
     "sysinfo_used": "已用",
     "sysinfo_free": "可用",
-    "sysinfo_total": "总计"
+    "sysinfo_total": "总计",
+    "figlet_description": "使用 FigletText 生成 ASCII 艺术文字",
+    "figlet_text_prompt": "输入要显示的文本:",
+    "figlet_color_prompt": "选择颜色:",
+    "figlet_empty_text": "文本不能为空",
+    "figlet_invalid_color": "无效的颜色: {0}",
+    "figlet_valid_colors": "有效的颜色",
+    "figlet_ascii_only": "只允许输入 ASCII 字符",
+    "figlet_copy_confirm": "是否复制到剪贴板?",
+    "figlet_copied": "✓ 已复制到剪贴板!",
+    "figlet_copy_failed": "⚠ 无法复制到剪贴板: {0}",
+    "figlet_copy_hint": "提示: 选中并复制上方的文本"
 }
