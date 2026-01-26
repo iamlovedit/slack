@@ -1,8 +1,11 @@
 using Slack.Localization;
 using Spectre.Console;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand(Order = int.MaxValue)]
 public class HelpCommand : ICommand
 {
     private readonly CommandRegistry _registry;

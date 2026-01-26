@@ -1,6 +1,4 @@
-using Spectre.Console;
-
-namespace Slack.Commands;
+namespace Slack.Infrastructure;
 
 public class CommandRegistry
 {

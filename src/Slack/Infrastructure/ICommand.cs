@@ -1,4 +1,4 @@
-namespace Slack.Commands;
+namespace Slack.Infrastructure;
 
 public interface ICommand
 {

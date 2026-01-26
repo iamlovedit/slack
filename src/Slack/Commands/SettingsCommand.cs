@@ -2,8 +2,11 @@ using Slack.Localization;
 using Slack.Models;
 using Spectre.Console;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class SettingsCommand : ICommand
 {
     public string Name => "settings";

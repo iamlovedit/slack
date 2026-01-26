@@ -8,8 +8,11 @@ using Slack.Serialization;
 using System.Text.Json.Serialization;
 using Spectre.Console;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class UpgradeCommand : ICommand
 {
     public string Name => "upgrade";

@@ -4,8 +4,11 @@ using System.Runtime.InteropServices;
 using Slack.Localization;
 using Spectre.Console;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class SysInfoCommand : ICommand
 {
     public string Name => "sysinfo";

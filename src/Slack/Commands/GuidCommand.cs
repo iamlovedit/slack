@@ -2,8 +2,11 @@ using Slack.Localization;
 using Spectre.Console;
 using TextCopy;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class GuidCommand : ICommand
 {
     public string Name => "guid";

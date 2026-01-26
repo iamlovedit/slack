@@ -4,8 +4,11 @@ using Slack.Localization;
 using Slack.Models;
 using Spectre.Console;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class UninstallCommand : ICommand
 {
     public string Name => "uninstall";

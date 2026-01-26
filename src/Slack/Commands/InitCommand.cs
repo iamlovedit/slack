@@ -2,8 +2,11 @@ using Slack.Localization;
 using Slack.Models;
 using Spectre.Console;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class InitCommand : ICommand
 {
     public string Name => "init";

@@ -2,8 +2,11 @@ using Slack.Localization;
 using Spectre.Console;
 using System.Reflection;
 
+using Slack.Infrastructure;
+
 namespace Slack.Commands;
 
+[AutoRegisterCommand]
 public class VersionCommand : ICommand
 {
     public string Name => "version";

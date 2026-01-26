@@ -1,21 +1,13 @@
 using System.Text;
 using Slack.Commands;
+using Slack.Infrastructure;
 using Slack.Localization;
 using Spectre.Console;
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
 var registry = new CommandRegistry();
-registry.Register(new UpCommand());
-registry.Register(new InitCommand());
-registry.Register(new ConfigCommand());
-registry.Register(new UpgradeCommand());
-registry.Register(new VersionCommand());
-registry.Register(new UninstallCommand());
-registry.Register(new GuidCommand());
-registry.Register(new SettingsCommand());
-registry.Register(new SysInfoCommand());
-registry.Register(new HelpCommand(registry));
+registry.RegisterAllCommands();
 
 if (args.Length == 0)
 {
