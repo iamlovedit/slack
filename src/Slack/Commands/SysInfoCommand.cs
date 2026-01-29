@@ -622,7 +622,7 @@ public class SysInfoCommand : ICommand
         try
         {
             // Get total memory
-            var psi = new ProcessStartInfo
+            var totalPsi = new ProcessStartInfo
             {
                 FileName = "sysctl",
                 Arguments = "-n hw.memsize",
@@ -631,19 +631,68 @@ public class SysInfoCommand : ICommand
                 CreateNoWindow = true
             };
 
-            using var process = Process.Start(psi);
-            if (process == null) return (0, 0);
-
-            var output = process.StandardOutput.ReadToEnd().Trim();
-            process.WaitForExit();
-
-            if (long.TryParse(output, out var total))
+            long total = 0;
+            using (var totalProcess = Process.Start(totalPsi))
             {
-                // Get used memory from vm_stat (simplified)
-                var gcInfo = GC.GetGCMemoryInfo();
-                var used = total - gcInfo.TotalAvailableMemoryBytes;
-                return (used, total);
+                if (totalProcess == null) return (0, 0);
+                var totalOutput = totalProcess.StandardOutput.ReadToEnd().Trim();
+                totalProcess.WaitForExit();
+                if (!long.TryParse(totalOutput, out total) || total == 0)
+                    return (0, 0);
             }
+
+            // Get memory usage from vm_stat
+            var vmPsi = new ProcessStartInfo
+            {
+                FileName = "vm_stat",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var vmProcess = Process.Start(vmPsi);
+            if (vmProcess == null) return (0, total);
+
+            var vmOutput = vmProcess.StandardOutput.ReadToEnd();
+            vmProcess.WaitForExit();
+
+            // Parse vm_stat output
+            // Get page size first (usually 16384 on Apple Silicon, 4096 on Intel)
+            long pageSize = 16384; // Default for Apple Silicon
+            var pageSizeMatch = System.Text.RegularExpressions.Regex.Match(
+                vmOutput, @"page size of (\d+) bytes");
+            if (pageSizeMatch.Success)
+            {
+                pageSize = long.Parse(pageSizeMatch.Groups[1].Value);
+            }
+
+            // Parse memory pages
+            long pagesActive = 0, pagesWired = 0, pagesCompressed = 0, pagesSpeculative = 0;
+            
+            var activeMatch = System.Text.RegularExpressions.Regex.Match(
+                vmOutput, @"Pages active:\s*(\d+)");
+            if (activeMatch.Success)
+                pagesActive = long.Parse(activeMatch.Groups[1].Value);
+
+            var wiredMatch = System.Text.RegularExpressions.Regex.Match(
+                vmOutput, @"Pages wired down:\s*(\d+)");
+            if (wiredMatch.Success)
+                pagesWired = long.Parse(wiredMatch.Groups[1].Value);
+
+            var compressedMatch = System.Text.RegularExpressions.Regex.Match(
+                vmOutput, @"Pages occupied by compressor:\s*(\d+)");
+            if (compressedMatch.Success)
+                pagesCompressed = long.Parse(compressedMatch.Groups[1].Value);
+
+            var speculativeMatch = System.Text.RegularExpressions.Regex.Match(
+                vmOutput, @"Pages speculative:\s*(\d+)");
+            if (speculativeMatch.Success)
+                pagesSpeculative = long.Parse(speculativeMatch.Groups[1].Value);
+
+            // Used memory = Active + Wired + Compressed + Speculative (similar to Activity Monitor)
+            var used = (pagesActive + pagesWired + pagesCompressed + pagesSpeculative) * pageSize;
+            
+            return (used, total);
         }
         catch
         {
